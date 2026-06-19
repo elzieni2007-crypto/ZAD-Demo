@@ -1406,7 +1406,7 @@ function updateFarmsSummary(){
   if(!farms.length){el.innerHTML='<div class="tm tc">لا توجد مزارع</div>';return;}
   el.innerHTML=farms.map(f=>{
     const fExps=exps.filter(e=>e.farmId===f.id);const fProds=prods.filter(p=>p.farmId===f.id);
-    const totExp=fExps.reduce((s,e)=>s+e.cost,0);const totRev=fProds.reduce((s,p)=>s+p.revenue,0);
+    const totExp=fExps.reduce((s,e)=>s+e.cost,0);const totRev=fProds.reduce((s,p)=>s+(+p.revenue||+p.total||0),0);
     const totQty=fProds.reduce((s,p)=>s+p.qty,0);const profit=totRev-totExp;
     return '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">'+
       '<div class="fb"><b>'+f.name+'</b><span class="badge bs">'+f.season+'</span></div>'+
@@ -1863,10 +1863,11 @@ function renderRpt(){
     const farms=R('farms',[]);const exps=R('farmExpenses',[]);const prods=R('farmProduction',[]);
     const fid=gvS('rFarm');
     const fList=fid?farms.filter(f=>String(f.id)===fid):farms;
-    sum.innerHTML='';
+    const farmRows=fList.map(f=>{const fe=exps.filter(e=>e.farmId===f.id&&inR(e.date));const fp=prods.filter(p=>p.farmId===f.id&&inR(p.date));const totE=fe.reduce((s,e)=>s+e.cost,0);const totR=fp.reduce((s,p)=>s+(+p.revenue||+p.total||0),0);const totQ=fp.reduce((s,p)=>s+p.qty,0);const profit=totR-totE;return {f,totE,totR,totQ,profit};});
+    const allRev=farmRows.reduce((s,r)=>s+r.totR,0), allExp=farmRows.reduce((s,r)=>s+r.totE,0), allProfit=farmRows.reduce((s,r)=>s+r.profit,0), allQty=farmRows.reduce((s,r)=>s+r.totQ,0);
+    sum.innerHTML=kRow([{l:'إجمالي إيرادات المزارع',v:money(allRev),i:'💰',c:'var(--success)'},{l:'إجمالي مصروفات المزارع',v:money(allExp),i:'💸',c:'var(--danger)'},{l:'صافي ربح المزارع',v:money(allProfit),i:'🌱',c:allProfit>=0?'var(--success)':'var(--danger)'},{l:'إجمالي الإنتاج',v:allQty.toLocaleString('ar-EG')+' كجم',i:'🍓',c:'var(--info)'}]);
     t.innerHTML='<tr><th>المزرعة</th><th>الموسم</th><th>المساحة</th><th>إجمالي المصروفات</th><th>إجمالي الإيرادات</th><th>صافي الربح/الخسارة</th><th>كمية الإنتاج كجم</th></tr>'+
-      fList.map(f=>{const fe=exps.filter(e=>e.farmId===f.id&&inR(e.date));const fp=prods.filter(p=>p.farmId===f.id&&inR(p.date));const totE=fe.reduce((s,e)=>s+e.cost,0);const totR=fp.reduce((s,p)=>s+p.revenue,0);const totQ=fp.reduce((s,p)=>s+p.qty,0);const profit=totR-totE;
-        return '<tr><td><b>'+f.name+'</b></td><td>'+f.season+'</td><td>'+f.area+' فدان</td><td class="td">'+money(totE)+'</td><td class="ts">'+money(totR)+'</td><td class="'+(profit>=0?'ts':'td')+'"><b>'+money(profit)+'</b></td><td>'+totQ.toLocaleString('ar-EG')+'</td></tr>';}).join('')||'<tr><td class="no-data" colspan="7">لا توجد بيانات</td></tr>';
+      farmRows.map(r=>'<tr><td><b>'+r.f.name+'</b></td><td>'+r.f.season+'</td><td>'+r.f.area+' فدان</td><td class="td">'+money(r.totE)+'</td><td class="ts">'+money(r.totR)+'</td><td class="'+(r.profit>=0?'ts':'td')+'"><b>'+money(r.profit)+'</b></td><td>'+r.totQ.toLocaleString('ar-EG')+'</td></tr>').join('')||'<tr><td class="no-data" colspan="7">لا توجد بيانات</td></tr>';
   }
   else if(type==='farmer_balance'){
     const farmers=R('farmers',[]);const purs=R('purchases',[]);const pays=R('farmerPayments',[]);
@@ -2082,7 +2083,7 @@ function renderFarmOperations(){const t=document.getElementById('farmOpsTable');
 
 // ══════════ 300+ DEMO RECORDS FOR PRESENTATION ══════════
 function seedDemo300(){
-  if(R('demoSeedVersion',0)>=300)return;
+  if(R('demoSeedVersion',0)>=301)return;
   const d=(i)=>{const dt=new Date();dt.setDate(dt.getDate()-i);return dt.toISOString().slice(0,10);};
   const pick=(arr,i)=>arr[i%arr.length];
   const farmers=R('farmers',[]), factories=R('factories',[]), farms=R('farms',[]), workers=R('workers',[]), vehicles=R('vehicles',[]), suppliers=R('suppliers',[]), clients=R('clients',[]);
@@ -2135,7 +2136,7 @@ function seedDemo300(){
     const farm=pick(farms,i), date=d((i%50)+1), type=pick(opTypes,i), cost=type==='ري'?350+(i%6)*80:type==='حصاد'?1200+(i%8)*150:700+(i%7)*110;
     farmOps.push({id:i,farmId:farm.id,farmName:farm.name,type,date,cost,owner:pick(['مقاول رش','مشرف المزرعة','مقاول حصاد','عامل ري'],i),qty:(20+i)+' وحدة',note:'عملية زراعية تجريبية'});
     farmExpenses.push({id:i,farmId:farm.id,farmName:farm.name,type,qty:(20+i)+' وحدة',cost,date,supplier:pick(suppliers,i)?.name||'مورد عام',note:'مصروف مزرعة مرتبط بالعملية'});
-    if(i<=25){const qty=850+(i%9)*160, price=30+(i%8); farmProduction.push({id:i,farmId:farm.id,farmName:farm.name,date,qty,price,total:qty*price,note:'إنتاج تجريبي'});}
+    if(i<=25){const qty=850+(i%9)*160, price=30+(i%8); farmProduction.push({id:i,farmId:farm.id,farmName:farm.name,date,qty,price,revenue:+(qty*price).toFixed(2),total:+(qty*price).toFixed(2),note:'إنتاج تجريبي'});}
     je('مصروف مزرعة '+farm.name,[{acc:'مصروفات المزارع',dr:cost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:cost}],date);
     al('Create','Farm Operations','عملية '+type+' - '+farm.name,date);
   }
@@ -2207,7 +2208,7 @@ function seedDemo300(){
   W('users',[{id:1,name:'Admin',role:'Admin',status:'Active'},{id:2,name:'Mostafa Finance',role:'Finance',status:'Active'},{id:3,name:'Store User',role:'Store Keeper',status:'Active'},{id:4,name:'Farm Manager',role:'Farm Manager',status:'Active'},{id:5,name:'Viewer Demo',role:'Viewer',status:'Active'}]);
   W('taxSettings',{taxReg:'123-456-789',vatRate:14,etaEnv:'Pre-Production'});
   W('ids',{farmer:50,factory:50,worker:50,farm:20,vehicle:20,supplier:20,client:20,agroItem:50,irrigItem:50,purchase:1061,sale:2056,processing:51,trip:36,maint:19,farmExp:46,farmProd:26,wage:36,farmerPay:23,factColl:23,agropur:23,agrosale:21,irrsale:19,cheque:19,journal:journal.length+1,workflow:31,farmOp:46});
-  W('demoSeedVersion',300);
+  W('demoSeedVersion',301);
 }
 
 // ══════════ DATA MANAGEMENT ══════════
