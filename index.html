@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>ZAD ERP | نظام الهدي للحاصلات الزراعية</title>
+<style>
+:root{
+  --primary:#1B5E20;--accent:#2E7D32;--accent2:#388E3C;--light:#E8F5E9;
+  --success:#2E7D32;--warning:#F57F17;--danger:#C62828;--info:#1565C0;
+  --bg:#F1F8E9;--card:#fff;--text:#1A1A1A;--muted:#546E7A;--border:#C8E6C9;
+  --radius:10px;--shadow:0 1px 4px rgba(0,0,0,.1);--shadow-md:0 4px 12px rgba(0,0,0,.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI','Tahoma',Arial,sans-serif;}
+body{background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* Header */
+header{background:linear-gradient(135deg,#1B5E20,#2E7D32);color:#fff;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow-md);}
+.hbrand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;}
+.hbrand small{font-size:11px;opacity:.8;display:block;font-weight:400;}
+.hright{display:flex;align-items:center;gap:14px;font-size:13px;}
+.hright span{opacity:.85;}
+
+/* Nav */
+nav{background:#1A4A1F;padding:0;}
+.nav-row{display:flex;overflow-x:auto;white-space:nowrap;scrollbar-width:none;border-bottom:1px solid rgba(255,255,255,.08);}
+.nav-row::-webkit-scrollbar{display:none;}
+.nbtn{display:inline-flex;align-items:center;gap:5px;padding:9px 15px;color:rgba(255,255,255,.7);background:none;border:none;cursor:pointer;font-size:13px;font-family:inherit;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap;}
+.nbtn:hover{color:#fff;background:rgba(255,255,255,.08);}
+.nbtn.active{color:#A5D6A7;border-bottom-color:#A5D6A7;}
+
+/* Main */
+main{padding:16px;max-width:1400px;margin:0 auto;}
+.page{display:none;}.page.active{display:block;}
+
+/* Cards */
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:14px;}
+.card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px;}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+
+/* KPI */
+.kpi{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);border-right:4px solid var(--accent);display:flex;justify-content:space-between;align-items:center;}
+.kpi-val{font-size:24px;font-weight:800;color:var(--primary);}
+.kpi-label{font-size:11px;color:var(--muted);margin-top:2px;}
+.kpi-icon{font-size:26px;opacity:.55;}
+
+/* Form */
+.field{margin-bottom:11px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;padding:8px 11px;border:1px solid var(--border);border-radius:7px;font-size:13px;font-family:inherit;background:#fff;color:var(--text);transition:.15s;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,125,50,.12);}
+.field textarea{min-height:70px;resize:vertical;}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.fr4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border:none;border-radius:7px;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600;transition:.15s;}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-secondary{background:#f5f5f5;color:var(--text);border:1px solid var(--border);}
+.btn-success{background:#2E7D32;color:#fff;}
+.btn-danger{background:var(--danger);color:#fff;}
+.btn-warning{background:var(--warning);color:#fff;}
+.btn-info{background:var(--info);color:#fff;}
+.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-block{width:100%;justify-content:center;}
+.bgrp{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+
+/* Table */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:var(--primary);color:#fff;padding:9px 11px;text-align:right;font-weight:600;white-space:nowrap;}
+td{padding:8px 11px;border-bottom:1px solid #f0f0f0;vertical-align:middle;}
+tr:hover td{background:#F9FBE7;}
+.no-data{text-align:center;padding:28px;color:var(--muted);}
+
+/* Badge */
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;}
+.bs{background:#E8F5E9;color:#1B5E20;}
+.bd{background:#FFEBEE;color:#C62828;}
+.bw{background:#FFF8E1;color:#E65100;}
+.bi{background:#E3F2FD;color:#0D47A1;}
+.bm{background:#F5F5F5;color:#455A64;}
+.bp{background:#F3E5F5;color:#4A148C;}
+
+/* Alert */
+.alert{padding:10px 14px;border-radius:7px;margin-bottom:10px;font-size:13px;}
+.alert-s{background:#E8F5E9;color:#1B5E20;border-right:4px solid #2E7D32;}
+.alert-d{background:#FFEBEE;color:#C62828;border-right:4px solid #C62828;}
+.alert-w{background:#FFF8E1;color:#E65100;border-right:4px solid #F57F17;}
+.alert-i{background:#E3F2FD;color:#0D47A1;border-right:4px solid #1565C0;}
+
+/* Search dropdown */
+.sw{position:relative;}
+.dr{display:none;position:absolute;z-index:200;background:#fff;border:1px solid var(--border);border-radius:8px;width:100%;max-height:200px;overflow-y:auto;box-shadow:var(--shadow-md);top:calc(100% + 3px);right:0;}
+.di{padding:9px 12px;cursor:pointer;border-bottom:1px solid #f5f5f5;font-size:13px;display:flex;justify-content:space-between;align-items:center;}
+.di:hover{background:var(--light);}
+
+/* Tabs */
+.tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:12px;overflow-x:auto;gap:0;}
+.tab{padding:8px 15px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.tp{display:none;}.tp.active{display:block;}
+
+/* Utils */
+.fb{display:flex;justify-content:space-between;align-items:center;}
+.mt1{margin-top:8px;}.mt2{margin-top:14px;}
+.mb1{margin-bottom:8px;}
+.tm{color:var(--muted);}.ts{color:var(--success);}.td{color:var(--danger);}.tw{color:var(--warning);}
+.tc{text-align:center;}
+.fw7{font-weight:700;}.fw8{font-weight:800;}
+.divider{height:1px;background:var(--border);margin:12px 0;}
+.chip{display:inline-block;background:var(--light);border:1px solid var(--border);border-radius:20px;padding:3px 11px;font-size:12px;margin:2px;}
+
+/* Progress bar */
+.prog{background:#e0e0e0;border-radius:8px;height:8px;overflow:hidden;margin-top:6px;}
+.prog-bar{height:100%;background:var(--accent);border-radius:8px;transition:.5s;}
+
+/* Responsive */
+@media(max-width:768px){
+  html,body{width:100%;overflow-x:hidden;}
+  header,nav,main{width:1200px;max-width:1200px;min-width:1200px;transform-origin:top right;}
+  header{transform:scale(calc(100vw / 1200));margin-bottom:calc((58px * (100vw / 1200)) - 58px);}
+  nav{transform:scale(calc(100vw / 1200));margin-bottom:calc((80px * (100vw / 1200)) - 80px);}
+  main{transform:scale(calc(100vw / 1200));padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbrand">
+    <span style="font-size:28px;">🌿</span>
+    <div><div>ZAD ERP — الهدي للحاصلات الزراعية</div><small>نظام إدارة متكامل للمنشآت الزراعية</small></div>
+  </div>
+  <div class="hright">
+    <span id="hClock"></span>
+    <span id="hSeason" class="badge bs"></span>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-row">
+    <button class="nbtn active" onclick="P('dashboard',this)">📊 لوحة التحكم</button>
+    <button class="nbtn" onclick="P('supply',this)">🍓 توريد الفراولة</button>
+    <button class="nbtn" onclick="P('farms',this)">🌱 المزارع</button>
+    <button class="nbtn" onclick="P('transport',this)">🚛 النقل</button>
+    <button class="nbtn" onclick="P('agro',this)">🧪 مبيدات وأسمدة</button>
+    <button class="nbtn" onclick="P('irrigation',this)">💧 ري حديث</button>
+  </div>
+  <div class="nav-row">
+    <button class="nbtn" onclick="P('farmers',this)">👨‍🌾 المزارعون</button>
+    <button class="nbtn" onclick="P('factories',this)">🏭 المصانع</button>
+    <button class="nbtn" onclick="P('workers',this)">👷 العمالة</button>
+    <button class="nbtn" onclick="P('treasury',this)">💰 الخزينة والبنوك</button>
+    <button class="nbtn" onclick="P('cheques',this)">📑 الشيكات</button>
+    <button class="nbtn" onclick="P('accounts',this)">📒 الحسابات</button>
+    <button class="nbtn" onclick="P('reports',this)">📈 التقارير</button>
+    <button class="nbtn" onclick="P('settings',this)">⚙️ الإعدادات</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ══════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════ -->
+<div id="dashboard" class="page active">
+  <div class="g4 mb1" id="kpiGrid"></div>
+  <div class="g3 mt2">
+    <div class="card" style="grid-column:span 2;">
+      <div class="card-title">🍓 آخر عمليات التوريد</div>
+      <div class="tbl-wrap"><table id="dashSupply"></table></div>
+    </div>
+    <div>
+      <div class="card"><div class="card-title">⚠️ تنبيهات</div><div id="dashAlerts"></div></div>
+      <div class="card"><div class="card-title">💰 ملخص الخزينة</div><div id="dashTreasury"></div></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card"><div class="card-title">🏭 ربحية المصانع (الموسم)</div><div class="tbl-wrap"><table id="dashFactoryProfit"></table></div></div>
+    <div class="card"><div class="card-title">🌱 ربحية المزارع</div><div class="tbl-wrap"><table id="dashFarmProfit"></table></div></div>
+    <div class="card"><div class="card-title">📦 مخزون منخفض</div><div id="dashLowStock"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SUPPLY (توريد الفراولة)
+══════════════════════════════════════ -->
+<div id="supply" class="page">
+  <div class="tabs">
+    <div class="tab active" onclick="ST(this,'sPurchases')">🛒 الشراء من المزارعين</div>
+    <div class="tab" onclick="ST(this,'sProcessing')">⚙️ التجهيز / المفرش</div>
+    <div class="tab" onclick="ST(this,'sSales')">📤 البيع للمصانع</div>
+    <div class="tab" onclick="ST(this,'sProfit')">💹 حساب الأرباح</div>
+  </div>
+
+  <!-- شراء -->
+  <div id="sPurchases" class="tp active">
+    <div class="card">
+      <div class="card-title">➕ تسجيل شراء فراولة جديد</div>
+      <div class="fr4">
+        <div class="field"><label>المزارع *</label>
+          <div class="sw"><input id="purFarmerS" placeholder="ابحث باسم المزارع..." oninput="srch('purFarmerS','purFarmerR','purFarmerId','purFarmerChip','farmers')" autocomplete="off"><div id="purFarmerR" class="dr"></div></div>
+          <div id="purFarmerChip" style="display:none;margin-top:4px;"></div>
+          <input type="hidden" id="purFarmerId">
+        </div>
+        <div class="field"><label>التاريخ</label><input type="date" id="purDate"></div>
+        <div class="field"><label>الموسم</label><input id="purSeason" placeholder="2024-2025"></div>
+        <div class="field"><label>رقم الوصل</label><input id="purRef" placeholder="تلقائي"></div>
+      </div>
+      <div class="fr4">
+        <div class="field"><label>عدد البرانيك</label><input type="number" id="purUnits" min="0" oninput="calcPur()"></div>
+        <div class="field"><label>الوزن الإجمالي (كجم)</label><input type="number" id="purWeight" min="0" oninput="calcPur()"></div>
+        <div class="field"><label>سعر الكجم (ج)</label><input type="number" id="purPrice" min="0" oninput="calcPur()"></div>
+        <div class="field"><label>إجمالي القيمة</label><input id="purTotal" readonly style="background:#f5f5f5;font-weight:700;color:var(--primary);"></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>طريقة الدفع</label><select id="purMethod"><option value="كاش">كاش</option><option value="آجل">آجل</option><option value="جزئي">جزئي</option></select></div>
+        <div class="field"><label>المبلغ المدفوع (ج)</label><input type="number" id="purPaid" value="0"></div>
+        <div class="field"><label>ملاحظات</label><input id="purNote" placeholder="ملاحظات اختيارية"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addPurchase()">✅ حفظ عملية الشراء</button>
+    </div>
+    <div class="card">
+      <div class="fb mb1">
+        <div class="card-title" style="margin:0;border:none;padding:0;">📋 سجل المشتريات</div>
+        <div style="display:flex;gap:8px;">
+          <input id="purSearch" placeholder="بحث..." oninput="renderPurchases()" style="padding:7px 11px;border:1px solid var(--border);border-radius:7px;font-size:13px;width:200px;">
+          <select id="purSeasonFilter" onchange="renderPurchases()" style="padding:7px;border:1px solid var(--border);border-radius:7px;font-size:13px;"><option value="">كل المواسم</option></select>
+        </div>
+      </div>
+      <div id="purSummary" class="g4 mb1"></div>
+      <div class="tbl-wrap"><table id="purTable"></table></div>
+    </div>
+  </div>
+
+  <!-- تجهيز -->
+  <div id="sProcessing" class="tp" style="display:none;">
+    <div class="card">
+      <div class="card-title">➕ تسجيل عملية تجهيز</div>
+      <div class="fr4">
+        <div class="field"><label>عملية الشراء المرتبطة</label><select id="procPurId"><option value="">-- اختر --</option></select></div>
+        <div class="field"><label>محطة التجهيز / المفرش</label><input id="procStation" placeholder="اسم المحطة"></div>
+        <div class="field"><label>التاريخ</label><input type="date" id="procDate"></div>
+        <div class="field"><label>عدد البرانيك المجهزة</label><input type="number" id="procUnits" min="0"></div>
+      </div>
+      <div class="fr4">
+        <div class="field"><label>تكلفة التجهيز/البرنيكة (ج)</label><input type="number" id="procCostUnit" min="0" oninput="calcProc()"></div>
+        <div class="field"><label>إجمالي تكلفة التجهيز (ج)</label><input id="procCostTotal" readonly style="background:#f5f5f5;font-weight:700;"></div>
+        <div class="field"><label>تكلفة العمالة (ج)</label><input type="number" id="procLaborCost" min="0"></div>
+        <div class="field"><label>مصروفات أخرى (ج)</label><input type="number" id="procOther" min="0"></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="procNote" placeholder="ملاحظات"></div>
+      <button class="btn btn-primary" onclick="addProcessing()">✅ حفظ عملية التجهيز</button>
+    </div>
+    <div class="card"><div class="card-title">📋 سجل التجهيز</div><div class="tbl-wrap"><table id="procTable"></table></div></div>
+  </div>
+
+  <!-- بيع -->
+  <div id="sSales" class="tp" style="display:none;">
+    <div class="card">
+      <div class="card-title">➕ تسجيل توريد لمصنع</div>
+      <div class="fr4">
+        <div class="field"><label>المصنع *</label>
+          <div class="sw"><input id="salFactS" placeholder="ابحث باسم المصنع..." oninput="srch('salFactS','salFactR','salFactId','salFactChip','factories')" autocomplete="off"><div id="salFactR" class="dr"></div></div>
+          <div id="salFactChip" style="display:none;margin-top:4px;"></div>
+          <input type="hidden" id="salFactId">
+        </div>
+        <div class="field"><label>التاريخ</label><input type="date" id="salDate"></div>
+        <div class="field"><label>عملية الشراء المرتبطة</label><select id="salPurId"><option value="">-- اختر --</option></select></div>
+        <div class="field"><label>رقم بوليصة البسكول</label><input id="salBascule" placeholder="رقم الميزان"></div>
+      </div>
+      <div class="fr4">
+        <div class="field"><label>الوزن الصافي (كجم)</label><input type="number" id="salWeight" min="0" oninput="calcSale()"></div>
+        <div class="field"><label>سعر الكجم (ج)</label><input type="number" id="salPrice" min="0" oninput="calcSale()"></div>
+        <div class="field"><label>إجمالي القيمة (ج)</label><input id="salTotal" readonly style="background:#f5f5f5;font-weight:700;color:var(--primary);"></div>
+        <div class="field"><label>طريقة الدفع</label><select id="salMethod"><option value="كاش">كاش</option><option value="آجل">آجل</option></select></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>تكلفة نقل (ج)</label><input type="number" id="salTransport" value="0" oninput="calcSale()"></div>
+        <div class="field"><label>مصروفات إضافية (ج)</label><input type="number" id="salExtra" value="0"></div>
+        <div class="field"><label>ملاحظات</label><input id="salNote"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addSale()">✅ حفظ عملية التوريد</button>
+    </div>
+    <div class="card"><div class="card-title">📋 سجل التوريدات</div><div class="tbl-wrap"><table id="salTable"></table></div></div>
+  </div>
+
+  <!-- أرباح -->
+  <div id="sProfit" class="tp" style="display:none;">
+    <div class="card">
+      <div class="card-title">💹 تقرير الأرباح الشاملة</div>
+      <div class="fr3">
+        <div class="field"><label>من تاريخ</label><input type="date" id="profFrom"></div>
+        <div class="field"><label>إلى تاريخ</label><input type="date" id="profTo"></div>
+        <div class="field"><label>المصنع</label><select id="profFactory"><option value="">كل المصانع</option></select></div>
+      </div>
+      <button class="btn btn-primary" onclick="calcProfit()">📊 احتساب الأرباح</button>
+    </div>
+    <div id="profitResult"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FARMS (المزارع)
+══════════════════════════════════════ -->
+<div id="farms" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ إضافة / تعديل مزرعة</div>
+      <div class="fr2">
+        <div class="field"><label>اسم المزرعة *</label><input id="farmName" placeholder="اسم المزرعة"></div>
+        <div class="field"><label>الموسم</label><input id="farmSeason" placeholder="2024-2025"></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>المساحة (فدان)</label><input type="number" id="farmArea" min="0"></div>
+        <div class="field"><label>الموقع</label><input id="farmLocation" placeholder="الموقع"></div>
+        <div class="field"><label>المحصول</label><input id="farmCrop" value="فراولة"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addFarm()">✅ حفظ المزرعة</button>
+    </div>
+    <div class="card"><div class="card-title">🌱 المزارع المسجلة</div><div class="tbl-wrap"><table id="farmsTable"></table></div></div>
+  </div>
+  <!-- مصروفات المزرعة -->
+  <div class="card">
+    <div class="card-title">💸 تسجيل مصروف مزرعة</div>
+    <div class="fr4">
+      <div class="field"><label>المزرعة</label><select id="fexpFarm"></select></div>
+      <div class="field"><label>نوع المصروف</label>
+        <select id="fexpType">
+          <option>شتلات</option><option>أسمدة</option><option>مبيدات</option>
+          <option>عمالة</option><option>ري</option><option>وقود</option>
+          <option>صيانة</option><option>نقل</option><option>مقاول</option><option>أخرى</option>
+        </select>
+      </div>
+      <div class="field"><label>الكمية / الوحدة</label><input id="fexpQty" placeholder="مثال: 100 كيلو"></div>
+      <div class="field"><label>التكلفة (ج)</label><input type="number" id="fexpCost" min="0"></div>
+    </div>
+    <div class="fr3">
+      <div class="field"><label>التاريخ</label><input type="date" id="fexpDate"></div>
+      <div class="field"><label>المورد / الجهة</label><input id="fexpSupplier" placeholder="اسم المورد"></div>
+      <div class="field"><label>ملاحظات</label><input id="fexpNote"></div>
+    </div>
+    <button class="btn btn-primary" onclick="addFarmExpense()">➕ تسجيل المصروف</button>
+  </div>
+  <!-- إنتاج المزرعة -->
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🍓 تسجيل الإنتاج</div>
+      <div class="fr3">
+        <div class="field"><label>المزرعة</label><select id="fprodFarm"></select></div>
+        <div class="field"><label>التاريخ</label><input type="date" id="fprodDate"></div>
+        <div class="field"><label>الكمية (كجم)</label><input type="number" id="fprodQty" min="0"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>سعر البيع (ج/كجم)</label><input type="number" id="fprodPrice" min="0"></div>
+        <div class="field"><label>ملاحظات</label><input id="fprodNote"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addFarmProduction()">➕ تسجيل الإنتاج</button>
+    </div>
+    <div class="card"><div class="card-title">📊 ملخص المزارع</div><div id="farmsSummary"></div></div>
+  </div>
+  <div class="card"><div class="card-title">📋 مصروفات وإنتاج المزارع</div><div class="tbl-wrap"><table id="farmExpTable"></table></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TRANSPORT (النقل)
+══════════════════════════════════════ -->
+<div id="transport" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🚛 إضافة سيارة</div>
+      <div class="fr2">
+        <div class="field"><label>رقم اللوحة</label><input id="vPlate" placeholder="رقم اللوحة"></div>
+        <div class="field"><label>نوع السيارة</label><select id="vType"><option>سيارة نقل</option><option>ميكروباص</option><option>تريلا</option><option>جرار</option><option>أخرى</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>اسم السائق</label><input id="vDriver" placeholder="اسم السائق"></div>
+        <div class="field"><label>موبايل السائق</label><input id="vDriverPhone" placeholder="01xxxxxxxxx"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addVehicle()">➕ إضافة سيارة</button>
+    </div>
+    <div class="card"><div class="card-title">🚛 السيارات المسجلة</div><div class="tbl-wrap"><table id="vehiclesTable"></table></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">➕ تسجيل نقلة</div>
+    <div class="fr4">
+      <div class="field"><label>السيارة</label><select id="tripVehicle"></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="tripDate"></div>
+      <div class="field"><label>من</label><input id="tripFrom" placeholder="نقطة الانطلاق"></div>
+      <div class="field"><label>إلى</label><input id="tripTo" placeholder="الوجهة"></div>
+    </div>
+    <div class="fr4">
+      <div class="field"><label>البضاعة / الحمولة</label><input id="tripCargo" placeholder="فراولة / أسمدة / ..."></div>
+      <div class="field"><label>الوزن (كجم)</label><input type="number" id="tripWeight" min="0"></div>
+      <div class="field"><label>تكلفة الوقود (ج)</label><input type="number" id="tripFuel" min="0"></div>
+      <div class="field"><label>تكلفة النقل الإجمالية (ج)</label><input type="number" id="tripCost" min="0"></div>
+    </div>
+    <div class="fr3">
+      <div class="field"><label>عملية الشراء / التوريد</label><select id="tripRef"><option value="">-- ربط اختياري --</option></select></div>
+      <div class="field"><label>نوع العملية</label><select id="tripRefType"><option value="">--</option><option value="purchase">شراء فراولة</option><option value="sale">توريد لمصنع</option><option value="farm">مزرعة</option><option value="other">أخرى</option></select></div>
+      <div class="field"><label>ملاحظات</label><input id="tripNote"></div>
+    </div>
+    <button class="btn btn-primary" onclick="addTrip()">✅ حفظ النقلة</button>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">📋 سجل النقلات</div>
+      <div class="tbl-wrap"><table id="tripsTable"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">⛽ تسجيل صيانة / وقود</div>
+      <div class="fr2">
+        <div class="field"><label>السيارة</label><select id="maintVehicle"></select></div>
+        <div class="field"><label>التاريخ</label><input type="date" id="maintDate"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>نوع</label><select id="maintType"><option>وقود</option><option>صيانة دورية</option><option>إصلاح</option><option>إطارات</option><option>أخرى</option></select></div>
+        <div class="field"><label>التكلفة (ج)</label><input type="number" id="maintCost" min="0"></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="maintNote"></div>
+      <button class="btn btn-primary btn-block" onclick="addMaintenance()">➕ تسجيل</button>
+      <div class="mt1 tbl-wrap"><table id="maintTable"></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     AGRO (مبيدات وأسمدة)
+══════════════════════════════════════ -->
+<div id="agro" class="page">
+  <div class="tabs">
+    <div class="tab active" onclick="ST(this,'aItems')">📦 المخزون</div>
+    <div class="tab" onclick="ST(this,'aPurchases')">🛒 مشتريات</div>
+    <div class="tab" onclick="ST(this,'aSales')">📤 مبيعات</div>
+  </div>
+  <div id="aItems" class="tp active">
+    <div class="g2">
+      <div class="card">
+        <div class="card-title">➕ إضافة صنف</div>
+        <div class="fr2">
+          <div class="field"><label>اسم الصنف *</label><input id="aiName" placeholder="اسم المبيد / السماد"></div>
+          <div class="field"><label>النوع</label><select id="aiType"><option>مبيد حشري</option><option>مبيد فطري</option><option>سماد</option><option>هرمون</option><option>أخرى</option></select></div>
+        </div>
+        <div class="fr3">
+          <div class="field"><label>الوحدة</label><input id="aiUnit" placeholder="لتر / كجم / عبوة"></div>
+          <div class="field"><label>سعر الشراء</label><input type="number" id="aiCost" min="0"></div>
+          <div class="field"><label>سعر البيع</label><input type="number" id="aiPrice" min="0"></div>
+        </div>
+        <div class="fr2">
+          <div class="field"><label>الكمية الحالية</label><input type="number" id="aiQty" min="0" value="0"></div>
+          <div class="field"><label>حد إعادة الطلب</label><input type="number" id="aiReorder" value="10"></div>
+        </div>
+        <button class="btn btn-primary" onclick="addAgroItem()">➕ حفظ الصنف</button>
+      </div>
+      <div class="card"><div class="card-title">📦 الأصناف</div><div class="tbl-wrap"><table id="aItemsTable"></table></div></div>
+    </div>
+  </div>
+  <div id="aPurchases" class="tp" style="display:none;">
+    <div class="card">
+      <div class="card-title">🛒 تسجيل مشتريات مبيدات / أسمدة</div>
+      <div class="fr4">
+        <div class="field"><label>الصنف</label><select id="apItem"></select></div>
+        <div class="field"><label>المورد</label>
+          <div class="sw"><input id="apSupplierS" placeholder="اسم المورد..." oninput="srch('apSupplierS','apSupplierR','apSupplierId','apSupplierChip','suppliers')" autocomplete="off"><div id="apSupplierR" class="dr"></div></div>
+          <input type="hidden" id="apSupplierId">
+          <div id="apSupplierChip" style="display:none;margin-top:4px;"></div>
+        </div>
+        <div class="field"><label>التاريخ</label><input type="date" id="apDate"></div>
+        <div class="field"><label>الكمية</label><input type="number" id="apQty" min="0" oninput="calcAgroPur()"></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>سعر الوحدة (ج)</label><input type="number" id="apPrice" min="0" oninput="calcAgroPur()"></div>
+        <div class="field"><label>الإجمالي (ج)</label><input id="apTotal" readonly style="background:#f5f5f5;font-weight:700;"></div>
+        <div class="field"><label>طريقة الدفع</label><select id="apMethod"><option>كاش</option><option>آجل</option></select></div>
+      </div>
+      <button class="btn btn-primary" onclick="addAgroPurchase()">✅ حفظ المشتريات</button>
+    </div>
+    <div class="card"><div class="card-title">📋 سجل المشتريات</div><div class="tbl-wrap"><table id="aPurTable"></table></div></div>
+  </div>
+  <div id="aSales" class="tp" style="display:none;">
+    <div class="card">
+      <div class="card-title">📤 تسجيل مبيعات مبيدات / أسمدة</div>
+      <div class="fr4">
+        <div class="field"><label>الصنف</label><select id="asItem"></select></div>
+        <div class="field"><label>العميل</label>
+          <div class="sw"><input id="asClientS" placeholder="اسم العميل..." oninput="srch('asClientS','asClientR','asClientId','asClientChip','clients')" autocomplete="off"><div id="asClientR" class="dr"></div></div>
+          <input type="hidden" id="asClientId">
+          <div id="asClientChip" style="display:none;margin-top:4px;"></div>
+        </div>
+        <div class="field"><label>التاريخ</label><input type="date" id="asDate"></div>
+        <div class="field"><label>الكمية</label><input type="number" id="asQty" min="0" oninput="calcAgroSale()"></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>سعر الوحدة (ج)</label><input type="number" id="asPrice" min="0" oninput="calcAgroSale()"></div>
+        <div class="field"><label>الإجمالي (ج)</label><input id="asTotal" readonly style="background:#f5f5f5;font-weight:700;"></div>
+        <div class="field"><label>طريقة الدفع</label><select id="asMethod"><option>كاش</option><option>آجل</option></select></div>
+      </div>
+      <button class="btn btn-primary" onclick="addAgroSale()">✅ حفظ المبيعات</button>
+    </div>
+    <div class="card"><div class="card-title">📋 سجل المبيعات</div><div class="tbl-wrap"><table id="aSalTable"></table></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     IRRIGATION
+══════════════════════════════════════ -->
+<div id="irrigation" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ إضافة صنف ري</div>
+      <div class="fr2">
+        <div class="field"><label>اسم الصنف *</label><input id="irName" placeholder="اسم المنتج"></div>
+        <div class="field"><label>النوع</label><select id="irType"><option>مواسير</option><option>رشاشات</option><option>طلمبات</option><option>فلاتر</option><option>كابلات</option><option>أخرى</option></select></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>الوحدة</label><input id="irUnit" placeholder="متر / قطعة"></div>
+        <div class="field"><label>سعر الشراء (ج)</label><input type="number" id="irCost" min="0"></div>
+        <div class="field"><label>سعر البيع (ج)</label><input type="number" id="irPrice" min="0"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>الكمية</label><input type="number" id="irQty" min="0" value="0"></div>
+        <div class="field"><label>حد إعادة الطلب</label><input type="number" id="irReorder" value="5"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addIrrigItem()">➕ حفظ الصنف</button>
+    </div>
+    <div class="card"><div class="card-title">💧 مخزون الري</div><div class="tbl-wrap"><table id="irTable"></table></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">📤 تسجيل عملية بيع ري</div>
+    <div class="fr4">
+      <div class="field"><label>الصنف</label><select id="irSaleItem"></select></div>
+      <div class="field"><label>العميل</label>
+        <div class="sw"><input id="irClientS" placeholder="اسم العميل..." oninput="srch('irClientS','irClientR','irClientId','irClientChip','clients')" autocomplete="off"><div id="irClientR" class="dr"></div></div>
+        <input type="hidden" id="irClientId">
+        <div id="irClientChip" style="display:none;margin-top:4px;"></div>
+      </div>
+      <div class="field"><label>الكمية</label><input type="number" id="irSaleQty" min="0" oninput="calcIrSale()"></div>
+      <div class="field"><label>سعر الوحدة (ج)</label><input type="number" id="irSalePrice" min="0" oninput="calcIrSale()"></div>
+    </div>
+    <div class="fr3">
+      <div class="field"><label>الإجمالي (ج)</label><input id="irSaleTotal" readonly style="background:#f5f5f5;font-weight:700;"></div>
+      <div class="field"><label>طريقة الدفع</label><select id="irSaleMethod"><option>كاش</option><option>آجل</option></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="irSaleDate"></div>
+    </div>
+    <button class="btn btn-primary" onclick="addIrrigSale()">✅ حفظ البيع</button>
+  </div>
+  <div class="card"><div class="card-title">📋 مبيعات الري</div><div class="tbl-wrap"><table id="irSalesTable"></table></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FARMERS (المزارعون)
+══════════════════════════════════════ -->
+<div id="farmers" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ تسجيل مزارع جديد</div>
+      <div class="fr2">
+        <div class="field"><label>الاسم *</label><input id="fName" placeholder="اسم المزارع"></div>
+        <div class="field"><label>الموبايل</label><input id="fPhone" placeholder="01xxxxxxxxx"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>الرقم القومي</label><input id="fNid" placeholder="14 رقم"></div>
+        <div class="field"><label>القرية / المنطقة</label><input id="fArea" placeholder="القرية"></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="fNote"></div>
+      <button class="btn btn-primary" onclick="addFarmer()">➕ حفظ</button>
+    </div>
+    <div class="card"><div class="card-title">👨‍🌾 سجل المزارعين</div><div class="tbl-wrap"><table id="farmersTable"></table></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💳 تسجيل سداد للمزارع</div>
+    <div class="fr4">
+      <div class="field"><label>المزارع</label>
+        <div class="sw"><input id="fpayFarmerS" placeholder="ابحث..." oninput="srch('fpayFarmerS','fpayFarmerR','fpayFarmerId','fpayFarmerChip','farmers')" autocomplete="off"><div id="fpayFarmerR" class="dr"></div></div>
+        <input type="hidden" id="fpayFarmerId">
+        <div id="fpayFarmerChip" style="display:none;margin-top:4px;"></div>
+      </div>
+      <div class="field"><label>المبلغ (ج)</label><input type="number" id="fpayAmount" min="0"></div>
+      <div class="field"><label>طريقة الدفع</label><select id="fpayMethod"><option>كاش</option><option>تحويل بنكي</option><option>شيك</option></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="fpayDate"></div>
+    </div>
+    <div class="field"><label>ملاحظات</label><input id="fpayNote"></div>
+    <button class="btn btn-success" onclick="payFarmer()">✅ تسجيل السداد</button>
+  </div>
+  <div class="card"><div class="card-title">📋 حركات المزارعين</div><div class="tbl-wrap"><table id="farmerMovTable"></table></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FACTORIES (المصانع)
+══════════════════════════════════════ -->
+<div id="factories" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ تسجيل مصنع جديد</div>
+      <div class="fr2">
+        <div class="field"><label>اسم المصنع *</label><input id="facName" placeholder="اسم المصنع"></div>
+        <div class="field"><label>الموبايل</label><input id="facPhone" placeholder="01xxxxxxxxx"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>المسؤول</label><input id="facContact" placeholder="اسم المسؤول"></div>
+        <div class="field"><label>العنوان</label><input id="facAddress" placeholder="العنوان"></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="facNote"></div>
+      <button class="btn btn-primary" onclick="addFactory()">➕ حفظ</button>
+    </div>
+    <div class="card"><div class="card-title">🏭 سجل المصانع</div><div class="tbl-wrap"><table id="factoriesTable"></table></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💳 تسجيل تحصيل من مصنع</div>
+    <div class="fr4">
+      <div class="field"><label>المصنع</label>
+        <div class="sw"><input id="fcollFactS" placeholder="ابحث..." oninput="srch('fcollFactS','fcollFactR','fcollFactId','fcollFactChip','factories')" autocomplete="off"><div id="fcollFactR" class="dr"></div></div>
+        <input type="hidden" id="fcollFactId">
+        <div id="fcollFactChip" style="display:none;margin-top:4px;"></div>
+      </div>
+      <div class="field"><label>المبلغ (ج)</label><input type="number" id="fcollAmount" min="0"></div>
+      <div class="field"><label>طريقة التحصيل</label><select id="fcollMethod"><option>كاش</option><option>تحويل بنكي</option><option>شيك</option></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="fcollDate"></div>
+    </div>
+    <div class="field"><label>ملاحظات</label><input id="fcollNote"></div>
+    <button class="btn btn-success" onclick="collectFactory()">✅ تسجيل التحصيل</button>
+  </div>
+  <div class="card"><div class="card-title">📋 حركات المصانع</div><div class="tbl-wrap"><table id="factoryMovTable"></table></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     WORKERS (العمالة)
+══════════════════════════════════════ -->
+<div id="workers" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ إضافة موظف / عامل / مقاول</div>
+      <div class="fr2">
+        <div class="field"><label>الاسم *</label><input id="wkName" placeholder="الاسم الكامل"></div>
+        <div class="field"><label>النوع</label><select id="wkType"><option>موظف</option><option>عامل يومي</option><option>مقاول</option><option>سائق</option></select></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>الموبايل</label><input id="wkPhone"></div>
+        <div class="field"><label>الراتب / الأجر</label><input type="number" id="wkSalary" min="0"></div>
+        <div class="field"><label>وحدة الأجر</label><select id="wkSalaryUnit"><option>شهري</option><option>يومي</option><option>للنقلة</option><option>للطن</option><option>للبرنيكة</option></select></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="wkNote"></div>
+      <button class="btn btn-primary" onclick="addWorker()">➕ حفظ</button>
+    </div>
+    <div class="card"><div class="card-title">👷 سجل العمالة</div><div class="tbl-wrap"><table id="workersTable"></table></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">💸 تسجيل صرف أجور</div>
+    <div class="fr4">
+      <div class="field"><label>الموظف / العامل</label>
+        <div class="sw"><input id="wpayWkS" placeholder="ابحث..." oninput="srch('wpayWkS','wpayWkR','wpayWkId','wpayWkChip','workers')" autocomplete="off"><div id="wpayWkR" class="dr"></div></div>
+        <input type="hidden" id="wpayWkId">
+        <div id="wpayWkChip" style="display:none;margin-top:4px;"></div>
+      </div>
+      <div class="field"><label>المبلغ (ج)</label><input type="number" id="wpayAmount" min="0"></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="wpayDate"></div>
+      <div class="field"><label>ربط بـ</label><select id="wpayRef"><option value="">عام</option><option value="purchase">شراء فراولة</option><option value="farm">مزرعة</option><option value="processing">تجهيز</option><option value="transport">نقل</option></select></div>
+    </div>
+    <div class="fr2">
+      <div class="field"><label>طريقة الدفع</label><select id="wpayMethod"><option>كاش</option><option>تحويل</option></select></div>
+      <div class="field"><label>ملاحظات</label><input id="wpayNote"></div>
+    </div>
+    <button class="btn btn-success" onclick="payWorker()">✅ تسجيل الصرف</button>
+  </div>
+  <div class="card"><div class="card-title">📋 سجل الأجور</div><div class="tbl-wrap"><table id="wagesTable"></table></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TREASURY (الخزينة)
+══════════════════════════════════════ -->
+<div id="treasury" class="page">
+  <div class="g4 mb1" id="treasuryKpi"></div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">💸 تسجيل حركة خزينة / بنك</div>
+      <div class="fr2">
+        <div class="field"><label>نوع الحركة</label><select id="tmType"><option value="قبض">قبض ↓</option><option value="صرف">صرف ↑</option></select></div>
+        <div class="field"><label>الخزينة / البنك</label><select id="tmAccount"><option>الخزينة الرئيسية</option><option>البنك الأهلي</option><option>بنك مصر</option><option>خزينة المزرعة</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>المبلغ (ج)</label><input type="number" id="tmAmount" min="0"></div>
+        <div class="field"><label>وسيلة الدفع</label><select id="tmMethod"><option>كاش</option><option>تحويل بنكي</option><option>شيك</option></select></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>البيان</label><input id="tmDesc" placeholder="وصف الحركة"></div>
+        <div class="field"><label>التاريخ</label><input type="date" id="tmDate"></div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="addTM()">✅ تسجيل الحركة</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 أرصدة الخزائن والبنوك</div>
+      <div id="treasuryBalances"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📜 كشف حساب الخزينة</div>
+    <div class="fr3 mb1">
+      <div class="field"><label>الخزينة / البنك</label><select id="tmFilter"><option value="">الكل</option><option>الخزينة الرئيسية</option><option>البنك الأهلي</option><option>بنك مصر</option><option>خزينة المزرعة</option></select></div>
+      <div class="field"><label>من</label><input type="date" id="tmFrom"></div>
+      <div class="field"><label>إلى</label><input type="date" id="tmTo"></div>
+    </div>
+    <button class="btn btn-secondary btn-sm" onclick="renderTreasury()">🔍 تصفية</button>
+    <div class="tbl-wrap mt1"><table id="treasuryTable"></table></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHEQUES (الشيكات)
+══════════════════════════════════════ -->
+<div id="cheques" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">➕ تسجيل شيك</div>
+      <div class="fr2">
+        <div class="field"><label>نوع الشيك</label><select id="chkType"><option value="مقبوض">مقبوض (من عملاء)</option><option value="مدفوع">مدفوع (لموردين)</option></select></div>
+        <div class="field"><label>رقم الشيك</label><input id="chkNum" placeholder="رقم الشيك"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>البنك</label><input id="chkBank" placeholder="اسم البنك"></div>
+        <div class="field"><label>اسم الساحب / المستفيد</label><input id="chkName" placeholder="الاسم"></div>
+      </div>
+      <div class="fr3">
+        <div class="field"><label>المبلغ (ج)</label><input type="number" id="chkAmount" min="0"></div>
+        <div class="field"><label>تاريخ الإصدار</label><input type="date" id="chkDate"></div>
+        <div class="field"><label>تاريخ الاستحقاق</label><input type="date" id="chkDue"></div>
+      </div>
+      <div class="field"><label>ملاحظات</label><input id="chkNote"></div>
+      <button class="btn btn-primary" onclick="addCheque()">➕ حفظ الشيك</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📑 الشيكات القادمة للاستحقاق</div>
+      <div id="chkDueAlert"></div>
+      <div class="tbl-wrap mt1"><table id="chkDueTable"></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 سجل الشيكات</div>
+    <div class="fr2 mb1">
+      <div class="field"><label>النوع</label><select id="chkFilterType" onchange="renderCheques()"><option value="">الكل</option><option value="مقبوض">مقبوض</option><option value="مدفوع">مدفوع</option></select></div>
+      <div class="field"><label>الحالة</label><select id="chkFilterStatus" onchange="renderCheques()"><option value="">الكل</option><option value="معلق">معلق</option><option value="محصّل">محصّل</option><option value="مرتجع">مرتجع</option></select></div>
+    </div>
+    <div class="tbl-wrap"><table id="chkTable"></table></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ACCOUNTS (الحسابات)
+══════════════════════════════════════ -->
+<div id="accounts" class="page">
+  <div class="tabs">
+    <div class="tab active" onclick="ST(this,'acJournal')">📒 القيود اليومية</div>
+    <div class="tab" onclick="ST(this,'acCOA')">🌳 شجرة الحسابات</div>
+    <div class="tab" onclick="ST(this,'acTB');renderTB()">⚖️ ميزان المراجعة</div>
+    <div class="tab" onclick="ST(this,'acPL');renderPL()">📊 الأرباح والخسائر</div>
+  </div>
+  <div id="acJournal" class="tp active">
+    <div class="card">
+      <div class="card-title">➕ قيد يومي يدوي</div>
+      <div class="fr2">
+        <div class="field"><label>التاريخ</label><input type="date" id="jDate"></div>
+        <div class="field"><label>البيان</label><input id="jDesc" placeholder="وصف القيد"></div>
+      </div>
+      <div id="jLines"></div>
+      <div class="bgrp mt1">
+        <button class="btn btn-secondary btn-sm" onclick="addJLine()">➕ إضافة سطر</button>
+        <button class="btn btn-primary" onclick="saveJEntry()">💾 حفظ القيد</button>
+      </div>
+      <div id="jBal" style="display:none;" class="alert mt1"></div>
+    </div>
+    <div class="card"><div class="card-title">📜 سجل القيود</div><div class="tbl-wrap"><table id="jTable"></table></div></div>
+  </div>
+  <div id="acCOA" class="tp" style="display:none;"><div class="card"><div class="card-title">🌳 شجرة الحسابات</div><div id="coaTree"></div></div></div>
+  <div id="acTB" class="tp" style="display:none;"><div class="card"><div class="card-title">⚖️ ميزان المراجعة</div><div class="tbl-wrap"><table id="tbTable"></table></div></div></div>
+  <div id="acPL" class="tp" style="display:none;"><div class="card"><div class="card-title">📊 قائمة الأرباح والخسائر</div><div id="plResult"></div></div></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     REPORTS (التقارير)
+══════════════════════════════════════ -->
+<div id="reports" class="page">
+  <div class="card">
+    <div class="card-title">📊 التقارير الذكية</div>
+    <div class="fr3">
+      <div class="field"><label>نوع التقرير</label>
+        <select id="rType" onchange="rTypeChanged()">
+          <option value="supply_profit">ربحية توريد الفراولة</option>
+          <option value="factory_profit">ربحية كل مصنع</option>
+          <option value="farm_profit">ربحية المزارع</option>
+          <option value="farmer_balance">أرصدة المزارعين</option>
+          <option value="factory_balance">أرصدة المصانع</option>
+          <option value="purchases">مشتريات الفراولة</option>
+          <option value="sales">مبيعات الفراولة</option>
+          <option value="treasury">حركات الخزينة</option>
+          <option value="agro_stock">مخزون المبيدات والأسمدة</option>
+          <option value="workers_wages">أجور العمالة</option>
+          <option value="transport_cost">تكاليف النقل</option>
+          <option value="journal">القيود المحاسبية</option>
+        </select>
+      </div>
+      <div class="field"><label>من تاريخ</label><input type="date" id="rFrom" onchange="renderRpt()"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="rTo" onchange="renderRpt()"></div>
+    </div>
+    <div id="rSmartFilters" class="fr3" style="margin-top:4px;"></div>
+    <div class="bgrp mt1">
+      <button class="btn btn-primary" onclick="renderRpt()">📊 تحديث</button>
+      <button class="btn btn-secondary" onclick="printRpt()">🖨 طباعة</button>
+      <button class="btn btn-secondary" onclick="exportRptCSV()">📥 CSV</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="g4 mb1" id="rSummary"></div>
+    <div class="tbl-wrap"><table id="rTable"></table></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SETTINGS
+══════════════════════════════════════ -->
+<div id="settings" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🏢 بيانات الشركة</div>
+      <div class="field"><label>اسم الشركة</label><input id="setName" value="شركة الهدي للحاصلات الزراعية"></div>
+      <div class="field"><label>العنوان</label><input id="setAddress"></div>
+      <div class="field"><label>التليفون</label><input id="setPhone"></div>
+      <div class="field"><label>الموسم الحالي</label><input id="setSeason" value="2024-2025"></div>
+      <div class="field"><label>وزن البرنيكة الافتراضي (كجم)</label><input type="number" id="setBernika" value="13"></div>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 حفظ</button>
+    </div>
+    <div class="card">
+      <div class="card-title">🔄 إدارة البيانات</div>
+      <div class="bgrp" style="flex-direction:column;gap:10px;">
+        <button class="btn btn-secondary" onclick="exportData()">📤 تصدير البيانات (Backup)</button>
+        <label class="btn btn-secondary" style="cursor:pointer;">📥 استيراد بيانات<input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)"></label>
+        <button class="btn btn-danger" onclick="if(confirm('حذف كل البيانات؟'))resetData()">🗑 حذف كل البيانات</button>
+      </div>
+    </div>
+  </div>
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">👤 إدارة الموردين</div>
+      <div class="fr2">
+        <div class="field"><label>اسم المورد *</label><input id="supName"></div>
+        <div class="field"><label>الموبايل</label><input id="supPhone"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>النشاط</label><select id="supType"><option>مبيدات وأسمدة</option><option>ري</option><option>وقود</option><option>شتلات</option><option>أخرى</option></select></div>
+        <div class="field"><label>ملاحظات</label><input id="supNote"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addSupplier()">➕ إضافة</button>
+      <div class="tbl-wrap mt1"><table id="suppliersTable"></table></div>
+    </div>
+    <div class="card">
+      <div class="card-title">🏪 إدارة العملاء</div>
+      <div class="fr2">
+        <div class="field"><label>اسم العميل *</label><input id="cliName"></div>
+        <div class="field"><label>الموبايل</label><input id="cliPhone"></div>
+      </div>
+      <div class="fr2">
+        <div class="field"><label>النشاط</label><input id="cliType" placeholder="مزارع / تاجر / ..."></div>
+        <div class="field"><label>ملاحظات</label><input id="cliNote"></div>
+      </div>
+      <button class="btn btn-primary" onclick="addClient()">➕ إضافة</button>
+      <div class="tbl-wrap mt1"><table id="clientsTable"></table></div>
+    </div>
+  </div>
+</div>
+
+</main>
+<script>
+// ══════════ STORAGE ══════════
+const K='zad_';
+function R(k,d){try{const v=localStorage.getItem(K+k);return v!=null?JSON.parse(v):d;}catch(e){return d;}}
+function W(k,v){try{localStorage.setItem(K+k,JSON.stringify(v));}catch(e){alert('خطأ في الحفظ!');}}
+function nid(key,start){const ids=R('ids',{});const v=ids[key]||(start||1);ids[key]=v+1;W('ids',ids);return v;}
+function money(v){return (+v||0).toLocaleString('ar-EG',{minimumFractionDigits:2,maximumFractionDigits:2})+' ج';}
+function today(){return new Date().toISOString().slice(0,10);}
+function now(){return new Date().toISOString();}
+function fd(d){try{return new Date(d).toLocaleDateString('ar-EG');}catch(e){return d||'';}}
+function fdt(d){try{return new Date(d).toLocaleString('ar-EG');}catch(e){return d||'';}}
+function gv(id){const el=document.getElementById(id);return el?el.value:'';}
+function sv(id,v){const el=document.getElementById(id);if(el)el.value=v;}
+
+// ══════════ SEED DATA ══════════
+function seed(){
+  if(R('seeded',false))return;
+  W('farmers',[
+    {id:1,name:'حسن محمد العجمي',phone:'01001111111',nid:'',area:'كفر الشيخ',balance:0},
+    {id:2,name:'محمود إبراهيم سالم',phone:'01002222222',nid:'',area:'دمياط',balance:2500},
+    {id:3,name:'أحمد عبدالله فرج',phone:'01003333333',nid:'',area:'المنوفية',balance:0},
+    {id:4,name:'عبدالرحمن طه محمد',phone:'01004444444',nid:'',area:'القليوبية',balance:1200},
+    {id:5,name:'سامي عطية حسين',phone:'01005555555',nid:'',area:'بنها',balance:0},
+  ]);
+  W('factories',[
+    {id:1,name:'مصنع النيل للتجميد',phone:'0122111',contact:'م. طارق',address:'العاشر من رمضان',balance:15000},
+    {id:2,name:'مصنع الدلتا للمعلبات',phone:'0122222',contact:'أ. سمير',address:'الإسماعيلية',balance:8500},
+    {id:3,name:'شركة فريش فود',phone:'0122333',contact:'م. نادر',address:'القاهرة',balance:0},
+  ]);
+  W('workers',[
+    {id:1,name:'علي محمد حسن',type:'موظف',phone:'01011111',salary:4000,salaryUnit:'شهري',due:0},
+    {id:2,name:'محمد أحمد سعد',type:'عامل يومي',phone:'01022222',salary:150,salaryUnit:'يومي',due:0},
+    {id:3,name:'أبو بكر الصديق',type:'مقاول',phone:'01033333',salary:2,salaryUnit:'للبرنيكة',due:0},
+    {id:4,name:'خالد ناصر',type:'سائق',phone:'01044444',salary:3000,salaryUnit:'شهري',due:0},
+  ]);
+  W('farms',[
+    {id:1,name:'مزرعة النيل',season:'2024-2025',area:5,location:'كفر الشيخ',crop:'فراولة'},
+    {id:2,name:'مزرعة الدلتا',season:'2024-2025',area:3,location:'دمياط',crop:'فراولة'},
+  ]);
+  W('vehicles',[
+    {id:1,plate:'ق م م 123',type:'سيارة نقل',driver:'خالد ناصر',driverPhone:'01044444'},
+    {id:2,plate:'ب س ت 456',type:'تريلا',driver:'حسن علي',driverPhone:'01055555'},
+  ]);
+  W('suppliers',[
+    {id:1,name:'مورد المبيدات الزراعية',phone:'01099111',type:'مبيدات وأسمدة',balance:0},
+    {id:2,name:'شركة البذور والشتلات',phone:'01099222',type:'شتلات',balance:500},
+  ]);
+  W('clients',[
+    {id:1,name:'مزارع كفر الشيخ',phone:'01088111',type:'مزارع',balance:0},
+    {id:2,name:'تاجر الجملة الزراعي',phone:'01088222',type:'تاجر',balance:1500},
+  ]);
+  W('agroItems',[
+    {id:1,name:'سماد NPK 20-20-20',type:'سماد',unit:'كجم',cost:18,price:25,qty:500,reorder:100},
+    {id:2,name:'مبيد حشري Imidacloprid',type:'مبيد حشري',unit:'لتر',cost:80,price:120,qty:50,reorder:10},
+    {id:3,name:'مبيد فطري Iprodione',type:'مبيد فطري',unit:'لتر',cost:95,price:140,qty:30,reorder:8},
+    {id:4,name:'سماد هيوميك أسيد',type:'سماد',unit:'لتر',cost:45,price:70,qty:100,reorder:20},
+    {id:5,name:'كالسيوم بور',type:'سماد',unit:'كجم',cost:30,price:50,qty:200,reorder:40},
+  ]);
+  W('irrigItems',[
+    {id:1,name:'مواسير HDPE 32',type:'مواسير',unit:'متر',cost:8,price:12,qty:1000,reorder:200},
+    {id:2,name:'رشاشات دوارة',type:'رشاشات',unit:'قطعة',cost:15,price:25,qty:200,reorder:50},
+    {id:3,name:'طلمبة 1.5 حصان',type:'طلمبات',unit:'قطعة',cost:850,price:1200,qty:10,reorder:3},
+    {id:4,name:'فلتر رملي 2 بوصة',type:'فلاتر',unit:'قطعة',cost:450,price:700,qty:8,reorder:2},
+  ]);
+  W('coa',[
+    {code:'1',name:'الأصول',type:'asset',parent:null,level:1},
+    {code:'11',name:'الأصول المتداولة',type:'asset',parent:'1',level:2},
+    {code:'111',name:'الخزينة الرئيسية',type:'asset',parent:'11',level:3},
+    {code:'112',name:'البنك الأهلي',type:'asset',parent:'11',level:3},
+    {code:'113',name:'بنك مصر',type:'asset',parent:'11',level:3},
+    {code:'114',name:'ذمم مدينة - مصانع',type:'asset',parent:'11',level:3},
+    {code:'115',name:'مخزون فراولة',type:'asset',parent:'11',level:3},
+    {code:'116',name:'مخزون مبيدات وأسمدة',type:'asset',parent:'11',level:3},
+    {code:'117',name:'مخزون ري',type:'asset',parent:'11',level:3},
+    {code:'12',name:'الأصول الثابتة',type:'asset',parent:'1',level:2},
+    {code:'121',name:'سيارات النقل',type:'asset',parent:'12',level:3},
+    {code:'122',name:'معدات المزارع',type:'asset',parent:'12',level:3},
+    {code:'2',name:'الخصوم',type:'liability',parent:null,level:1},
+    {code:'21',name:'الخصوم المتداولة',type:'liability',parent:'2',level:2},
+    {code:'211',name:'ذمم دائنة - مزارعون',type:'liability',parent:'21',level:3},
+    {code:'212',name:'ذمم دائنة - موردون',type:'liability',parent:'21',level:3},
+    {code:'213',name:'مستحقات عمالة',type:'liability',parent:'21',level:3},
+    {code:'3',name:'حقوق الملكية',type:'equity',parent:null,level:1},
+    {code:'31',name:'رأس المال',type:'equity',parent:'3',level:2},
+    {code:'32',name:'الأرباح المحتجزة',type:'equity',parent:'3',level:2},
+    {code:'4',name:'الإيرادات',type:'revenue',parent:null,level:1},
+    {code:'41',name:'إيرادات توريد الفراولة',type:'revenue',parent:'4',level:2},
+    {code:'42',name:'إيرادات المبيدات والأسمدة',type:'revenue',parent:'4',level:2},
+    {code:'43',name:'إيرادات الري',type:'revenue',parent:'4',level:2},
+    {code:'44',name:'إيرادات المزارع',type:'revenue',parent:'4',level:2},
+    {code:'5',name:'المصروفات',type:'expense',parent:null,level:1},
+    {code:'51',name:'تكلفة شراء الفراولة',type:'expense',parent:'5',level:2},
+    {code:'52',name:'تكلفة التجهيز',type:'expense',parent:'5',level:2},
+    {code:'53',name:'تكلفة النقل',type:'expense',parent:'5',level:2},
+    {code:'54',name:'رواتب وأجور',type:'expense',parent:'5',level:2},
+    {code:'55',name:'مصروفات المزارع',type:'expense',parent:'5',level:2},
+    {code:'56',name:'مصروفات إدارية',type:'expense',parent:'5',level:2},
+    {code:'57',name:'تكلفة مبيعات مبيدات',type:'expense',parent:'5',level:2},
+    {code:'58',name:'تكلفة مبيعات ري',type:'expense',parent:'5',level:2},
+  ]);
+  W('treasury',[{id:'T-001',date:now(),type:'قبض',account:'الخزينة الرئيسية',amount:100000,method:'كاش',desc:'رصيد افتتاحي'}]);
+  W('ids',{farmer:6,factory:4,worker:5,farm:3,vehicle:3,supplier:3,client:3,agroItem:6,irrigItem:5,purchase:1,sale:1,processing:1,trip:1,maint:1,farmExp:1,farmProd:1,wage:1,farmerPay:1,factColl:1,agropur:1,agrosale:1,irrsale:1,cheque:1,journal:2});
+  jEntry('رصيد افتتاحي',[{acc:'الخزينة الرئيسية',dr:100000,cr:0},{acc:'رأس المال',dr:0,cr:100000}]);
+  W('settings',{name:'شركة الهدي للحاصلات الزراعية',address:'',phone:'',season:'2024-2025',bernika:13});
+  W('seeded',true);
+}
+
+// ══════════ NAV ══════════
+function P(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(btn)btn.classList.add('active');
+  const r={
+    dashboard:renderDashboard,
+    supply:initSupply,
+    farms:()=>{renderFarms();fillFarmSelects();},
+    transport:()=>{renderVehicles();renderTrips();fillVehicleSelects();},
+    agro:()=>{renderAgroItems();fillAgroSelects();},
+    irrigation:()=>{renderIrrigItems();fillIrrigSelects();},
+    farmers:renderFarmers,
+    factories:renderFactories,
+    workers:renderWorkers,
+    treasury:()=>{renderTreasuryKpi();renderTreasury();},
+    cheques:renderCheques,
+    accounts:()=>{initJForm();renderJournal();renderCOA();},
+    reports:()=>{initRptDates();rTypeChanged();},
+    settings:()=>{loadSettings();renderSuppliers();renderClients();},
+  };
+  if(r[id])r[id]();
+}
+function ST(el,id){
+  const p=el.parentElement;
+  p.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');
+  let cont=el.closest('.page');
+  cont.querySelectorAll('.tp').forEach(tp=>{tp.classList.remove('active');tp.style.display='none';});
+  const pane=document.getElementById(id);if(pane){pane.classList.add('active');pane.style.display='block';}
+}
+
+// ══════════ SEARCH (reusable) ══════════
+function srch(inId,resId,hidId,chipId,dataKey){
+  const q=document.getElementById(inId)?.value.trim().toLowerCase();
+  const res=document.getElementById(resId);
+  if(!res||!q||q.length<1){if(res)res.style.display='none';return;}
+  const data=R(dataKey,[]).filter(x=>x.name.toLowerCase().includes(q)||(x.phone||'').includes(q)).slice(0,8);
+  res.innerHTML='';
+  data.forEach(x=>{
+    const d=document.createElement('div');d.className='di';
+    const bal=x.balance!==undefined?'<span class="badge '+(x.balance>0?'bd':'bs')+'">'+(x.balance>0?money(x.balance):'سليم')+'</span>':'';
+    d.innerHTML='<span><b>'+x.name+'</b> <span class="tm">#'+x.id+'</span></span>'+bal;
+    d.onclick=()=>{
+      if(hidId)document.getElementById(hidId).value=x.id;
+      document.getElementById(inId).value=x.name;
+      res.style.display='none';
+      const chip=document.getElementById(chipId);
+      if(chip){
+        chip.style.display='block';
+        chip.innerHTML='<span class="chip">'+x.name+' #'+x.id+(x.balance!==undefined?' | رصيد: '+money(x.balance):'')+'</span>';
+      }
+      // special: show balance for payment forms
+      if(inId==='payPatSearch'||inId==='fpayFarmerS'){const b=document.getElementById('fpayBalance');if(b){b.style.display=x.balance>0?'block':'none';b.textContent='الرصيد المستحق: '+money(x.balance);}}
+    };
+    res.appendChild(d);
+  });
+  if(!data.length){const d=document.createElement('div');d.className='di tm';d.textContent='لا توجد نتائج';res.appendChild(d);}
+  res.style.display='block';
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.sw')&&!e.target.closest('.dr'))document.querySelectorAll('.dr').forEach(r=>r.style.display='none');});
+
+// ══════════ HELPERS ══════════
+function jEntry(desc,lines){
+  const j=R('journal',[]);const id=nid('journal',1);
+  j.push({id,date:now(),desc,lines,auto:true});W('journal',j);
+}
+function addTMauto(type,account,amount,method,desc){
+  const t=R('treasury',[]);
+  t.push({id:'T-'+Date.now(),date:now(),type,account,amount:+amount,method,desc});W('treasury',t);
+}
+function coaOpts(){
+  const coa=R('coa',[]);
+  const leaves=coa.filter(c=>!coa.some(x=>x.parent===c.code));
+  return leaves.map(c=>'<option value="'+c.name+'">'+c.code+' - '+c.name+'</option>').join('');
+}
+function kpiRow(items){return '<div class="g4">'+items.map(k=>'<div class="kpi" style="border-color:'+k.c+'"><div><div class="kpi-val">'+k.v+'</div><div class="kpi-label">'+k.l+'</div></div><div class="kpi-icon">'+k.i+'</div></div>').join('')+'</div>';}
+
+// ══════════ SUPPLY — PURCHASES ══════════
+function calcPur(){
+  const w=+gv('purWeight')||0,p=+gv('purPrice')||0;
+  sv('purTotal',money(w*p));
+}
+function addPurchase(){
+  const pid=+gv('purFarmerId');if(!pid)return alert('اختر المزارع');
+  const units=+gv('purUnits');const weight=+gv('purWeight');const price=+gv('purPrice');
+  if(!weight||!price)return alert('أدخل الوزن والسعر');
+  const total=+(weight*price).toFixed(2);
+  const paid=+gv('purPaid')||0;const method=gv('purMethod');
+  const farmer=R('farmers',[]).find(f=>f.id===pid);
+  const id=nid('purchase',1001);
+  const purs=R('purchases',[]);
+  purs.push({id,farmerId:pid,farmerName:farmer?.name||'',date:gv('purDate')||today(),season:gv('purSeason')||R('settings',{season:'2024-2025'}).season,
+    units,weight,price,total,paid,remaining:+(total-paid).toFixed(2),method,note:gv('purNote'),status:paid>=total?'مسدد':'معلق'});
+  W('purchases',purs);
+  // تحديث رصيد المزارع
+  const remaining=+(total-paid).toFixed(2);
+  if(remaining>0){W('farmers',R('farmers',[]).map(f=>f.id===pid?{...f,balance:+(f.balance+remaining).toFixed(2)}:f));}
+  // قيد محاسبي
+  if(paid>0){addTMauto('صرف','الخزينة الرئيسية',paid,'كاش','شراء فراولة من '+farmer?.name+' #'+id);jEntry('شراء فراولة كاش #'+id,[{acc:'مخزون فراولة',dr:total,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:paid},{acc:'ذمم دائنة - مزارعون',dr:0,cr:remaining}]);}
+  else{jEntry('شراء فراولة آجل #'+id,[{acc:'مخزون فراولة',dr:total,cr:0},{acc:'ذمم دائنة - مزارعون',dr:0,cr:total}]);}
+  ['purFarmerId','purFarmerS','purFarmerChip'].forEach(i=>{const el=document.getElementById(i);if(el){if(i.endsWith('Chip'))el.style.display='none';else el.value='';}});
+  ['purUnits','purWeight','purPrice','purPaid','purNote'].forEach(i=>sv(i,''));sv('purTotal','');
+  renderPurchases();alert('تم حفظ عملية الشراء #'+id+' ✓\nإجمالي: '+money(total)+' | مدفوع: '+money(paid)+' | متبقي: '+money(remaining));
+}
+function renderPurchases(){
+  const q=gv('purSearch').toLowerCase();const sf=gv('purSeasonFilter');
+  let purs=R('purchases',[]).filter(p=>(!q||p.farmerName.toLowerCase().includes(q))&&(!sf||p.season===sf));
+  const t=document.getElementById('purTable');
+  if(!purs.length){t.innerHTML='<tr><td class="no-data" colspan="10">لا توجد مشتريات</td></tr>';return;}
+  const totW=purs.reduce((s,p)=>s+p.weight,0);const totVal=purs.reduce((s,p)=>s+p.total,0);
+  const totPaid=purs.reduce((s,p)=>s+p.paid,0);const totRem=purs.reduce((s,p)=>s+p.remaining,0);
+  document.getElementById('purSummary').innerHTML=kpiRow([
+    {l:'إجمالي الوزن (كجم)',v:totW.toLocaleString('ar-EG'),i:'⚖️',c:'var(--accent)'},
+    {l:'إجمالي القيمة',v:money(totVal),i:'💰',c:'var(--primary)'},
+    {l:'إجمالي المدفوع',v:money(totPaid),i:'✅',c:'var(--success)'},
+    {l:'إجمالي المتبقي',v:money(totRem),i:'⏳',c:'var(--warning)'},
+  ]);
+  t.innerHTML='<tr><th>#</th><th>المزارع</th><th>التاريخ</th><th>الموسم</th><th>البرانيك</th><th>الوزن كجم</th><th>سعر الكجم</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr>'+
+    purs.slice().reverse().map(p=>'<tr><td>#'+p.id+'</td><td><b>'+p.farmerName+'</b></td><td>'+fd(p.date)+'</td><td>'+p.season+'</td><td>'+p.units+'</td><td>'+p.weight.toLocaleString('ar-EG')+'</td><td>'+money(p.price)+'</td><td><b>'+money(p.total)+'</b></td><td class="ts">'+money(p.paid)+'</td><td class="'+(p.remaining>0?'td':'ts')+'">'+money(p.remaining)+'</td><td><span class="badge '+(p.status==='مسدد'?'bs':'bw')+'">'+p.status+'</span></td></tr>').join('');
+  // fill season filter
+  const seasons=[...new Set(R('purchases',[]).map(p=>p.season))];
+  const sf2=document.getElementById('purSeasonFilter');
+  if(sf2){const cur=sf2.value;sf2.innerHTML='<option value="">كل المواسم</option>'+seasons.map(s=>'<option value="'+s+'">'+s+'</option>').join('');sf2.value=cur;}
+}
+
+// ══════════ SUPPLY — PROCESSING ══════════
+function calcProc(){const u=+gv('procUnits')||0,c=+gv('procCostUnit')||0;sv('procCostTotal',money(u*c));}
+function initSupply(){
+  renderPurchases();renderProcessing();renderSales();
+  // fill purchase selects
+  const purs=R('purchases',[]);
+  const opts='<option value="">-- اختر --</option>'+purs.map(p=>'<option value="'+p.id+'">#'+p.id+' - '+p.farmerName+' ('+p.weight+'كجم)</option>').join('');
+  ['procPurId','salPurId'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  // fill factory dropdown for profit filter
+  const facts=R('factories',[]);
+  const fsel=document.getElementById('profFactory');
+  if(fsel)fsel.innerHTML='<option value="">كل المصانع</option>'+facts.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('');
+}
+function addProcessing(){
+  const purId=+gv('procPurId');const station=gv('procStation');
+  if(!purId||!station)return alert('اختر عملية الشراء وأدخل اسم المحطة');
+  const units=+gv('procUnits')||0;const costUnit=+gv('procCostUnit')||0;
+  const costTotal=+(units*costUnit).toFixed(2);const laborCost=+gv('procLaborCost')||0;const other=+gv('procOther')||0;
+  const totalCost=+(costTotal+laborCost+other).toFixed(2);
+  const id=nid('processing',1);
+  const procs=R('processing',[]);
+  procs.push({id,purchaseId:purId,station,date:gv('procDate')||today(),units,costUnit,costTotal,laborCost,other,totalCost,note:gv('procNote')});
+  W('processing',procs);
+  jEntry('تجهيز مفرش #'+id+' - '+station,[{acc:'تكلفة التجهيز',dr:totalCost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:totalCost}]);
+  ['procStation','procUnits','procCostUnit','procCostTotal','procLaborCost','procOther','procNote'].forEach(i=>sv(i,''));
+  renderProcessing();alert('تم حفظ عملية التجهيز ✓\nإجمالي التكلفة: '+money(totalCost));
+}
+function renderProcessing(){
+  const t=document.getElementById('procTable');const procs=R('processing',[]);
+  if(!procs.length){t.innerHTML='<tr><td class="no-data" colspan="8">لا توجد عمليات تجهيز</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>عملية الشراء</th><th>المحطة</th><th>التاريخ</th><th>البرانيك</th><th>تكلفة التجهيز</th><th>عمالة</th><th>الإجمالي</th></tr>'+
+    procs.slice().reverse().map(p=>{const pur=R('purchases',[]).find(x=>x.id===p.purchaseId);return '<tr><td>#'+p.id+'</td><td>'+(pur?'#'+pur.id+' - '+pur.farmerName:'—')+'</td><td>'+p.station+'</td><td>'+fd(p.date)+'</td><td>'+p.units+'</td><td>'+money(p.costTotal)+'</td><td>'+money(p.laborCost)+'</td><td><b>'+money(p.totalCost)+'</b></td></tr>';}).join('');
+}
+
+// ══════════ SUPPLY — SALES ══════════
+function calcSale(){const w=+gv('salWeight')||0,p=+gv('salPrice')||0,t=+gv('salTransport')||0;sv('salTotal',money(w*p));}
+function addSale(){
+  const fid=+gv('salFactId');if(!fid)return alert('اختر المصنع');
+  const weight=+gv('salWeight');const price=+gv('salPrice');
+  if(!weight||!price)return alert('أدخل الوزن والسعر');
+  const total=+(weight*price).toFixed(2);const method=gv('salMethod');
+  const transport=+gv('salTransport')||0;const extra=+gv('salExtra')||0;
+  const fact=R('factories',[]).find(f=>f.id===fid);
+  const id=nid('sale',2001);
+  const sales=R('sales',[]);
+  sales.push({id,factoryId:fid,factoryName:fact?.name||'',date:gv('salDate')||today(),
+    purchaseId:+gv('salPurId')||null,bascule:gv('salBascule'),weight,price,total,
+    transport,extra,method,note:gv('salNote'),status:method==='كاش'?'مسدد':'معلق'});
+  W('sales',sales);
+  if(method==='كاش'){
+    addTMauto('قبض','الخزينة الرئيسية',total,'كاش','توريد فراولة لـ '+fact?.name+' #'+id);
+    jEntry('توريد فراولة كاش #'+id,[{acc:'الخزينة الرئيسية',dr:total,cr:0},{acc:'إيرادات توريد الفراولة',dr:0,cr:total}]);
+  } else {
+    W('factories',R('factories',[]).map(f=>f.id===fid?{...f,balance:+(f.balance+total).toFixed(2)}:f));
+    jEntry('توريد فراولة آجل #'+id,[{acc:'ذمم مدينة - مصانع',dr:total,cr:0},{acc:'إيرادات توريد الفراولة',dr:0,cr:total}]);
+  }
+  if(transport>0)jEntry('تكلفة نقل توريد #'+id,[{acc:'تكلفة النقل',dr:transport,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:transport}]);
+  ['salFactId','salFactS','salBascule','salNote','salTransport','salExtra'].forEach(i=>sv(i,i==='salTransport'||i==='salExtra'?'0':''));
+  document.getElementById('salFactChip').style.display='none';
+  sv('salWeight','');sv('salPrice','');sv('salTotal','');
+  renderSales();alert('تم حفظ التوريد #'+id+' ✓\nإجمالي: '+money(total)+' ('+method+')');
+}
+function renderSales(){
+  const t=document.getElementById('salTable');const sales=R('sales',[]);
+  if(!sales.length){t.innerHTML='<tr><td class="no-data" colspan="9">لا توجد توريدات</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>المصنع</th><th>التاريخ</th><th>الوزن كجم</th><th>سعر الكجم</th><th>الإجمالي</th><th>النقل</th><th>الدفع</th><th>الحالة</th></tr>'+
+    sales.slice().reverse().map(s=>'<tr><td>#'+s.id+'</td><td><b>'+s.factoryName+'</b></td><td>'+fd(s.date)+'</td><td>'+s.weight.toLocaleString('ar-EG')+'</td><td>'+money(s.price)+'</td><td><b>'+money(s.total)+'</b></td><td>'+money(s.transport)+'</td><td><span class="badge '+(s.method==='كاش'?'bs':'bw')+'">'+s.method+'</span></td><td><span class="badge '+(s.status==='مسدد'?'bs':'bw')+'">'+s.status+'</span></td></tr>').join('');
+}
+
+// ══════════ SUPPLY — PROFIT CALC ══════════
+function calcProfit(){
+  const from=gv('profFrom');const to=gv('profTo');const fid=gv('profFactory');
+  const inR=d=>(!from||d>=from)&&(!to||d<=to+'T23:59:59');
+  let sales=R('sales',[]).filter(s=>inR(s.date));
+  if(fid) sales=sales.filter(s=>String(s.factoryId)===fid);
+  const purs=R('purchases',[]);const procs=R('processing',[]);
+  let rows=[];let totRev=0,totCost=0,totProfit=0;
+  sales.forEach(s=>{
+    const rev=s.total;
+    const pur=purs.find(p=>p.id===s.purchaseId);
+    const proc=procs.find(p=>p.purchaseId===s.purchaseId);
+    const purCost=pur?pur.total:0;
+    const procCost=proc?proc.totalCost:0;
+    const transCost=s.transport+s.extra;
+    const totalCost=+(purCost+procCost+transCost).toFixed(2);
+    const profit=+(rev-totalCost).toFixed(2);
+    totRev+=rev;totCost+=totalCost;totProfit+=profit;
+    rows.push({sale:s,rev,purCost,procCost,transCost,totalCost,profit,margin:rev>0?((profit/rev)*100).toFixed(1):0});
+  });
+  const el=document.getElementById('profitResult');
+  if(!rows.length){el.innerHTML='<div class="alert alert-w">لا توجد بيانات في هذه الفترة</div>';return;}
+  el.innerHTML=kpiRow([
+    {l:'إجمالي الإيرادات',v:money(totRev),i:'💰',c:'var(--accent)'},
+    {l:'إجمالي التكاليف',v:money(totCost),i:'💸',c:'var(--danger)'},
+    {l:'صافي الربح',v:money(totProfit),i:'📈',c:totProfit>=0?'var(--success)':'var(--danger)'},
+    {l:'هامش الربح',v:(totRev>0?((totProfit/totRev)*100).toFixed(1):0)+'%',i:'📊',c:'var(--info)'},
+  ])+'<div class="card mt2"><div class="tbl-wrap"><table><tr><th>#</th><th>المصنع</th><th>التاريخ</th><th>الإيراد</th><th>تكلفة الشراء</th><th>تكلفة التجهيز</th><th>تكلفة النقل</th><th>إجمالي التكلفة</th><th>صافي الربح</th><th>الهامش</th></tr>'+
+    rows.map(r=>'<tr><td>#'+r.sale.id+'</td><td>'+r.sale.factoryName+'</td><td>'+fd(r.sale.date)+'</td><td>'+money(r.rev)+'</td><td>'+money(r.purCost)+'</td><td>'+money(r.procCost)+'</td><td>'+money(r.transCost)+'</td><td>'+money(r.totalCost)+'</td><td class="'+(r.profit>=0?'ts':'td')+'"><b>'+money(r.profit)+'</b></td><td>'+(r.profit>=0?'✅ ':'⚠️ ')+r.margin+'%</td></tr>').join('')+'</table></div></div>';
+}
+
+// ══════════ FARMS ══════════
+function addFarm(){
+  const name=gv('farmName').trim();if(!name)return alert('أدخل اسم المزرعة');
+  const id=nid('farm',1);const farms=R('farms',[]);
+  farms.push({id,name,season:gv('farmSeason'),area:+gv('farmArea')||0,location:gv('farmLocation'),crop:gv('farmCrop')||'فراولة'});
+  W('farms',farms);['farmName','farmArea','farmLocation'].forEach(i=>sv(i,''));
+  renderFarms();fillFarmSelects();alert('تم إضافة المزرعة ✓');
+}
+function renderFarms(){
+  const t=document.getElementById('farmsTable');const farms=R('farms',[]);
+  if(!farms.length){t.innerHTML='<tr><td class="no-data" colspan="5">لا توجد مزارع</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>الاسم</th><th>الموسم</th><th>المساحة (فدان)</th><th>الموقع</th></tr>'+
+    farms.map(f=>'<tr><td>'+f.id+'</td><td><b>'+f.name+'</b></td><td>'+f.season+'</td><td>'+f.area+'</td><td>'+f.location+'</td></tr>').join('');
+}
+function fillFarmSelects(){
+  const farms=R('farms',[]);
+  const opts=farms.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('');
+  ['fexpFarm','fprodFarm'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+function addFarmExpense(){
+  const fid=+gv('fexpFarm');if(!fid)return alert('اختر المزرعة');
+  const cost=+gv('fexpCost');if(!cost)return alert('أدخل التكلفة');
+  const id=nid('farmExp',1);const exps=R('farmExpenses',[]);
+  const farm=R('farms',[]).find(f=>f.id===fid);
+  exps.push({id,farmId:fid,farmName:farm?.name||'',type:gv('fexpType'),qty:gv('fexpQty'),
+    cost,date:gv('fexpDate')||today(),supplier:gv('fexpSupplier'),note:gv('fexpNote')});
+  W('farmExpenses',exps);
+  jEntry('مصروف مزرعة '+farm?.name+' - '+gv('fexpType'),[{acc:'مصروفات المزارع',dr:cost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:cost}]);
+  addTMauto('صرف','الخزينة الرئيسية',cost,'كاش','مصروف مزرعة '+farm?.name);
+  ['fexpQty','fexpCost','fexpSupplier','fexpNote'].forEach(i=>sv(i,''));
+  renderFarmExpenses();updateFarmsSummary();alert('تم تسجيل المصروف ✓');
+}
+function addFarmProduction(){
+  const fid=+gv('fprodFarm');if(!fid)return alert('اختر المزرعة');
+  const qty=+gv('fprodQty');if(!qty)return alert('أدخل الكمية');
+  const price=+gv('fprodPrice')||0;const rev=+(qty*price).toFixed(2);
+  const id=nid('farmProd',1);const prods=R('farmProduction',[]);
+  const farm=R('farms',[]).find(f=>f.id===fid);
+  prods.push({id,farmId:fid,farmName:farm?.name||'',qty,price,revenue:rev,date:gv('fprodDate')||today(),note:gv('fprodNote')});
+  W('farmProduction',prods);
+  if(rev>0)jEntry('إنتاج مزرعة '+farm?.name,[{acc:'الخزينة الرئيسية',dr:rev,cr:0},{acc:'إيرادات المزارع',dr:0,cr:rev}]);
+  ['fprodQty','fprodPrice','fprodNote'].forEach(i=>sv(i,''));
+  updateFarmsSummary();alert('تم تسجيل الإنتاج ✓');
+}
+function renderFarmExpenses(){
+  const t=document.getElementById('farmExpTable');const exps=R('farmExpenses',[]);
+  if(!exps.length){t.innerHTML='<tr><td class="no-data" colspan="7">لا توجد مصروفات</td></tr>';return;}
+  t.innerHTML='<tr><th>المزرعة</th><th>النوع</th><th>الكمية</th><th>التكلفة</th><th>التاريخ</th><th>المورد</th><th>ملاحظات</th></tr>'+
+    exps.slice().reverse().map(e=>'<tr><td>'+e.farmName+'</td><td><span class="badge bm">'+e.type+'</span></td><td>'+e.qty+'</td><td><b>'+money(e.cost)+'</b></td><td>'+fd(e.date)+'</td><td>'+e.supplier+'</td><td>'+e.note+'</td></tr>').join('');
+}
+function updateFarmsSummary(){
+  const farms=R('farms',[]);const exps=R('farmExpenses',[]);const prods=R('farmProduction',[]);
+  const el=document.getElementById('farmsSummary');
+  if(!farms.length){el.innerHTML='<div class="tm tc">لا توجد مزارع</div>';return;}
+  el.innerHTML=farms.map(f=>{
+    const fExps=exps.filter(e=>e.farmId===f.id);const fProds=prods.filter(p=>p.farmId===f.id);
+    const totExp=fExps.reduce((s,e)=>s+e.cost,0);const totRev=fProds.reduce((s,p)=>s+p.revenue,0);
+    const totQty=fProds.reduce((s,p)=>s+p.qty,0);const profit=totRev-totExp;
+    return '<div style="border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;">'+
+      '<div class="fb"><b>'+f.name+'</b><span class="badge bs">'+f.season+'</span></div>'+
+      '<div class="fr2 mt1"><div><div class="tm" style="font-size:11px;">الإيرادات</div><b class="ts">'+money(totRev)+'</b></div><div><div class="tm" style="font-size:11px;">المصروفات</div><b class="td">'+money(totExp)+'</b></div></div>'+
+      '<div class="divider"></div><div class="fb"><span>صافي الربح:</span><b class="'+(profit>=0?'ts':'td')+'">'+money(profit)+'</b></div>'+
+      '<div style="font-size:12px;color:var(--muted);">إجمالي الإنتاج: '+totQty.toLocaleString('ar-EG')+' كجم</div>'+
+      '<div class="prog"><div class="prog-bar" style="width:'+(totRev>0?Math.min(100,(totRev-totExp)/totRev*100):0)+'%;background:'+(profit>=0?'var(--success)':'var(--danger)')+'"></div></div>'+
+      '</div>';
+  }).join('');
+}
+
+// ══════════ TRANSPORT ══════════
+function addVehicle(){
+  const plate=gv('vPlate').trim();if(!plate)return alert('أدخل رقم اللوحة');
+  const id=nid('vehicle',1);const v=R('vehicles',[]);
+  v.push({id,plate,type:gv('vType'),driver:gv('vDriver'),driverPhone:gv('vDriverPhone')});
+  W('vehicles',v);['vPlate','vDriver','vDriverPhone'].forEach(i=>sv(i,''));
+  renderVehicles();fillVehicleSelects();alert('تم إضافة السيارة ✓');
+}
+function renderVehicles(){
+  const t=document.getElementById('vehiclesTable');const v=R('vehicles',[]);
+  if(!v.length){t.innerHTML='<tr><td class="no-data" colspan="5">لا توجد سيارات</td></tr>';return;}
+  t.innerHTML='<tr><th>اللوحة</th><th>النوع</th><th>السائق</th><th>الموبايل</th><th>إجمالي تكاليف النقل</th></tr>'+
+    v.map(x=>{const trips=R('trips',[]).filter(t=>t.vehicleId===x.id);const tot=trips.reduce((s,t)=>s+t.cost,0);
+      return '<tr><td><b>'+x.plate+'</b></td><td>'+x.type+'</td><td>'+x.driver+'</td><td>'+x.driverPhone+'</td><td>'+money(tot)+'</td></tr>';}).join('');
+}
+function fillVehicleSelects(){
+  const v=R('vehicles',[]);const opts=v.map(x=>'<option value="'+x.id+'">'+x.plate+' - '+x.driver+'</option>').join('');
+  ['tripVehicle','maintVehicle'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  const purs=R('purchases',[]);const sales=R('sales',[]);
+  const rOpts='<option value="">-- ربط اختياري --</option>'+purs.map(p=>'<option value="pur-'+p.id+'">شراء #'+p.id+' - '+p.farmerName+'</option>').join('')+sales.map(s=>'<option value="sal-'+s.id+'">توريد #'+s.id+' - '+s.factoryName+'</option>').join('');
+  const el=document.getElementById('tripRef');if(el)el.innerHTML=rOpts;
+}
+function addTrip(){
+  const vid=+gv('tripVehicle');if(!vid)return alert('اختر السيارة');
+  const id=nid('trip',1);const trips=R('trips',[]);
+  const v=R('vehicles',[]).find(x=>x.id===vid);
+  const cost=+gv('tripCost')||0;const fuel=+gv('tripFuel')||0;
+  trips.push({id,vehicleId:vid,vehiclePlate:v?.plate||'',driver:v?.driver||'',
+    date:gv('tripDate')||today(),from:gv('tripFrom'),to:gv('tripTo'),
+    cargo:gv('tripCargo'),weight:+gv('tripWeight')||0,fuel,cost,ref:gv('tripRef'),note:gv('tripNote')});
+  W('trips',trips);
+  if(cost>0){addTMauto('صرف','الخزينة الرئيسية',cost,'كاش','تكلفة نقلة '+v?.plate);jEntry('تكلفة نقلة #'+id,[{acc:'تكلفة النقل',dr:cost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:cost}]);}
+  ['tripFrom','tripTo','tripCargo','tripWeight','tripFuel','tripCost','tripNote'].forEach(i=>sv(i,''));
+  renderTrips();alert('تم تسجيل النقلة ✓');
+}
+function renderTrips(){
+  const t=document.getElementById('tripsTable');const trips=R('trips',[]);
+  if(!trips.length){t.innerHTML='<tr><td class="no-data" colspan="8">لا توجد نقلات</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>السيارة</th><th>السائق</th><th>التاريخ</th><th>من</th><th>إلى</th><th>الحمولة</th><th>التكلفة</th></tr>'+
+    trips.slice().reverse().map(x=>'<tr><td>#'+x.id+'</td><td>'+x.vehiclePlate+'</td><td>'+x.driver+'</td><td>'+fd(x.date)+'</td><td>'+x.from+'</td><td>'+x.to+'</td><td>'+x.cargo+'</td><td>'+money(x.cost)+'</td></tr>').join('');
+}
+function addMaintenance(){
+  const vid=+gv('maintVehicle');if(!vid)return alert('اختر السيارة');
+  const cost=+gv('maintCost');if(!cost)return alert('أدخل التكلفة');
+  const id=nid('maint',1);const maints=R('maintenances',[]);
+  const v=R('vehicles',[]).find(x=>x.id===vid);
+  maints.push({id,vehicleId:vid,plate:v?.plate||'',type:gv('maintType'),cost,date:gv('maintDate')||today(),note:gv('maintNote')});
+  W('maintenances',maints);
+  addTMauto('صرف','الخزينة الرئيسية',cost,'كاش',gv('maintType')+' - '+v?.plate);
+  ['maintCost','maintNote'].forEach(i=>sv(i,''));
+  const t=document.getElementById('maintTable');const all=R('maintenances',[]);
+  t.innerHTML='<tr><th>السيارة</th><th>النوع</th><th>التكلفة</th><th>التاريخ</th></tr>'+all.slice().reverse().slice(0,10).map(m=>'<tr><td>'+m.plate+'</td><td>'+m.type+'</td><td>'+money(m.cost)+'</td><td>'+fd(m.date)+'</td></tr>').join('');
+}
+
+// ══════════ AGRO ══════════
+function addAgroItem(){
+  const name=gv('aiName').trim();if(!name)return alert('أدخل اسم الصنف');
+  const id=nid('agroItem',1);const items=R('agroItems',[]);
+  items.push({id,name,type:gv('aiType'),unit:gv('aiUnit'),cost:+gv('aiCost')||0,price:+gv('aiPrice')||0,qty:+gv('aiQty')||0,reorder:+gv('aiReorder')||10});
+  W('agroItems',items);['aiName','aiUnit','aiCost','aiPrice','aiQty'].forEach(i=>sv(i,''));
+  renderAgroItems();fillAgroSelects();alert('تم إضافة الصنف ✓');
+}
+function renderAgroItems(){
+  const t=document.getElementById('aItemsTable');const items=R('agroItems',[]);
+  if(!items.length){t.innerHTML='<tr><td class="no-data" colspan="7">لا توجد أصناف</td></tr>';return;}
+  t.innerHTML='<tr><th>الصنف</th><th>النوع</th><th>الوحدة</th><th>سعر الشراء</th><th>سعر البيع</th><th>الكمية</th><th>الحالة</th></tr>'+
+    items.map(i=>'<tr><td><b>'+i.name+'</b></td><td><span class="badge bm">'+i.type+'</span></td><td>'+i.unit+'</td><td>'+money(i.cost)+'</td><td>'+money(i.price)+'</td><td>'+i.qty+'</td><td><span class="badge '+(i.qty<i.reorder?'bd':'bs')+'">'+(i.qty<i.reorder?'تحت الحد':'كافي')+'</span></td></tr>').join('');
+}
+function fillAgroSelects(){
+  const items=R('agroItems',[]);const opts=items.map(i=>'<option value="'+i.id+'">'+i.name+' ('+i.qty+' '+i.unit+')</option>').join('');
+  ['apItem','asItem'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+}
+function calcAgroPur(){sv('apTotal',money((+gv('apQty')||0)*(+gv('apPrice')||0)));}
+function calcAgroSale(){sv('asTotal',money((+gv('asQty')||0)*(+gv('asPrice')||0)));}
+function addAgroPurchase(){
+  const itemId=+gv('apItem');const qty=+gv('apQty');const price=+gv('apPrice');
+  if(!qty||!price)return alert('أدخل الكمية والسعر');
+  const total=+(qty*price).toFixed(2);const method=gv('apMethod');
+  const item=R('agroItems',[]).find(i=>i.id===itemId);
+  W('agroItems',R('agroItems',[]).map(i=>i.id===itemId?{...i,qty:i.qty+qty,cost:price}:i));
+  const id=nid('agropur',1);const purs=R('agroPurchases',[]);
+  purs.push({id,itemId,itemName:item?.name||'',qty,price,total,method,date:gv('apDate')||today(),supplierId:+gv('apSupplierId')||null});
+  W('agroPurchases',purs);
+  if(method==='كاش')addTMauto('صرف','الخزينة الرئيسية',total,'كاش','شراء '+item?.name);
+  jEntry('شراء مبيدات - '+item?.name,[{acc:'مخزون مبيدات وأسمدة',dr:total,cr:0},{acc:method==='كاش'?'الخزينة الرئيسية':'ذمم دائنة - موردون',dr:0,cr:total}]);
+  renderAgroItems();fillAgroSelects();
+  const t=document.getElementById('aPurTable');const all=R('agroPurchases',[]);
+  t.innerHTML='<tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>الدفع</th><th>التاريخ</th></tr>'+all.slice().reverse().map(p=>'<tr><td>'+p.itemName+'</td><td>'+p.qty+'</td><td>'+money(p.price)+'</td><td>'+money(p.total)+'</td><td><span class="badge '+(p.method==='كاش'?'bs':'bw')+'">'+p.method+'</span></td><td>'+fd(p.date)+'</td></tr>').join('');
+  alert('تم حفظ المشتريات ✓ | '+money(total));
+}
+function addAgroSale(){
+  const itemId=+gv('asItem');const qty=+gv('asQty');const price=+gv('asPrice');
+  if(!qty||!price)return alert('أدخل الكمية والسعر');
+  const item=R('agroItems',[]).find(i=>i.id===itemId);
+  if(!item||item.qty<qty)return alert('الكمية غير متوفرة (متاح: '+(item?.qty||0)+')');
+  const total=+(qty*price).toFixed(2);const cost=+(qty*(item?.cost||0)).toFixed(2);
+  const method=gv('asMethod');
+  W('agroItems',R('agroItems',[]).map(i=>i.id===itemId?{...i,qty:i.qty-qty}:i));
+  const id=nid('agrosale',1);const sales=R('agroSales',[]);
+  sales.push({id,itemId,itemName:item.name,qty,price,total,cost,method,date:gv('asDate')||today(),clientId:+gv('asClientId')||null});
+  W('agroSales',sales);
+  if(method==='كاش')addTMauto('قبض','الخزينة الرئيسية',total,'كاش','بيع '+item.name);
+  jEntry('بيع مبيدات - '+item.name,[{acc:method==='كاش'?'الخزينة الرئيسية':'ذمم مدينة - مصانع',dr:total,cr:0},{acc:'إيرادات المبيدات والأسمدة',dr:0,cr:total}]);
+  renderAgroItems();fillAgroSelects();
+  const t=document.getElementById('aSalTable');const all=R('agroSales',[]);
+  t.innerHTML='<tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>الربح</th><th>الدفع</th><th>التاريخ</th></tr>'+all.slice().reverse().map(s=>'<tr><td>'+s.itemName+'</td><td>'+s.qty+'</td><td>'+money(s.price)+'</td><td>'+money(s.total)+'</td><td class="ts">'+money(s.total-s.cost)+'</td><td><span class="badge '+(s.method==='كاش'?'bs':'bw')+'">'+s.method+'</span></td><td>'+fd(s.date)+'</td></tr>').join('');
+  alert('تم حفظ البيع ✓ | '+money(total));
+}
+
+// ══════════ IRRIGATION ══════════
+function addIrrigItem(){
+  const name=gv('irName').trim();if(!name)return alert('أدخل اسم الصنف');
+  const id=nid('irrigItem',1);const items=R('irrigItems',[]);
+  items.push({id,name,type:gv('irType'),unit:gv('irUnit'),cost:+gv('irCost')||0,price:+gv('irPrice')||0,qty:+gv('irQty')||0,reorder:+gv('irReorder')||5});
+  W('irrigItems',items);['irName','irUnit','irCost','irPrice','irQty'].forEach(i=>sv(i,''));
+  renderIrrigItems();fillIrrigSelects();alert('تم إضافة الصنف ✓');
+}
+function renderIrrigItems(){
+  const t=document.getElementById('irTable');const items=R('irrigItems',[]);
+  if(!items.length){t.innerHTML='<tr><td class="no-data" colspan="7">لا توجد أصناف</td></tr>';return;}
+  t.innerHTML='<tr><th>الصنف</th><th>النوع</th><th>الوحدة</th><th>سعر الشراء</th><th>سعر البيع</th><th>الكمية</th><th>الحالة</th></tr>'+
+    items.map(i=>'<tr><td><b>'+i.name+'</b></td><td><span class="badge bi">'+i.type+'</span></td><td>'+i.unit+'</td><td>'+money(i.cost)+'</td><td>'+money(i.price)+'</td><td>'+i.qty+'</td><td><span class="badge '+(i.qty<i.reorder?'bd':'bs')+'">'+(i.qty<i.reorder?'تحت الحد':'كافي')+'</span></td></tr>').join('');
+}
+function fillIrrigSelects(){
+  const items=R('irrigItems',[]);const opts=items.map(i=>'<option value="'+i.id+'">'+i.name+' ('+i.qty+' '+i.unit+')</option>').join('');
+  const el=document.getElementById('irSaleItem');if(el)el.innerHTML=opts;
+}
+function calcIrSale(){sv('irSaleTotal',money((+gv('irSaleQty')||0)*(+gv('irSalePrice')||0)));}
+function addIrrigSale(){
+  const itemId=+gv('irSaleItem');const qty=+gv('irSaleQty');const price=+gv('irSalePrice');
+  if(!qty||!price)return alert('أدخل الكمية والسعر');
+  const item=R('irrigItems',[]).find(i=>i.id===itemId);
+  if(!item||item.qty<qty)return alert('الكمية غير متوفرة');
+  const total=+(qty*price).toFixed(2);const cost=+(qty*(item?.cost||0)).toFixed(2);
+  const method=gv('irSaleMethod');
+  W('irrigItems',R('irrigItems',[]).map(i=>i.id===itemId?{...i,qty:i.qty-qty}:i));
+  const id=nid('irrsale',1);const sales=R('irrigSales',[]);
+  sales.push({id,itemId,itemName:item.name,qty,price,total,cost,method,date:gv('irSaleDate')||today()});
+  W('irrigSales',sales);
+  if(method==='كاش')addTMauto('قبض','الخزينة الرئيسية',total,'كاش','بيع ري - '+item.name);
+  jEntry('بيع ري - '+item.name,[{acc:method==='كاش'?'الخزينة الرئيسية':'ذمم مدينة - مصانع',dr:total,cr:0},{acc:'إيرادات الري',dr:0,cr:total}]);
+  renderIrrigItems();fillIrrigSelects();
+  const t=document.getElementById('irSalesTable');const all=R('irrigSales',[]);
+  t.innerHTML='<tr><th>الصنف</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th><th>الربح</th><th>الدفع</th><th>التاريخ</th></tr>'+
+    all.slice().reverse().map(s=>'<tr><td>'+s.itemName+'</td><td>'+s.qty+'</td><td>'+money(s.price)+'</td><td>'+money(s.total)+'</td><td class="ts">'+money(s.total-s.cost)+'</td><td><span class="badge '+(s.method==='كاش'?'bs':'bw')+'">'+s.method+'</span></td><td>'+fd(s.date)+'</td></tr>').join('');
+  alert('تم حفظ البيع ✓');
+}
+
+// ══════════ FARMERS ══════════
+function addFarmer(){
+  const name=gv('fName').trim();if(!name)return alert('أدخل اسم المزارع');
+  const id=nid('farmer',1);const f=R('farmers',[]);
+  f.push({id,name,phone:gv('fPhone'),nid:gv('fNid'),area:gv('fArea'),note:gv('fNote'),balance:0});
+  W('farmers',f);['fName','fPhone','fNid','fArea','fNote'].forEach(i=>sv(i,''));
+  renderFarmers();alert('تم إضافة المزارع #'+id+' ✓');
+}
+function renderFarmers(){
+  const t=document.getElementById('farmersTable');const farmers=R('farmers',[]);
+  if(!farmers.length){t.innerHTML='<tr><td class="no-data" colspan="6">لا يوجد مزارعون</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>الاسم</th><th>الموبايل</th><th>المنطقة</th><th>الرصيد المستحق</th><th>إجمالي المشتريات</th></tr>'+
+    farmers.map(f=>{const purs=R('purchases',[]).filter(p=>p.farmerId===f.id);const totPur=purs.reduce((s,p)=>s+p.total,0);
+      return '<tr><td>'+f.id+'</td><td><b>'+f.name+'</b></td><td>'+f.phone+'</td><td>'+f.area+'</td><td class="'+(f.balance>0?'td':'ts')+'"><b>'+money(f.balance)+'</b></td><td>'+money(totPur)+'</td></tr>';}).join('');
+  const t2=document.getElementById('farmerMovTable');const movs=R('farmerPayments',[]);
+  if(!movs.length){t2.innerHTML='<tr><td class="no-data" colspan="6">لا توجد حركات</td></tr>';return;}
+  t2.innerHTML='<tr><th>#</th><th>المزارع</th><th>المبلغ</th><th>الطريقة</th><th>التاريخ</th><th>ملاحظات</th></tr>'+
+    movs.slice().reverse().map(m=>'<tr><td>'+m.id+'</td><td>'+m.farmerName+'</td><td class="ts"><b>'+money(m.amount)+'</b></td><td>'+m.method+'</td><td>'+fd(m.date)+'</td><td>'+m.note+'</td></tr>').join('');
+}
+function payFarmer(){
+  const fid=+gv('fpayFarmerId');if(!fid)return alert('اختر المزارع');
+  const amount=+gv('fpayAmount');if(!amount)return alert('أدخل المبلغ');
+  const method=gv('fpayMethod');const farmer=R('farmers',[]).find(f=>f.id===fid);
+  const id=nid('farmerPay',1);const pays=R('farmerPayments',[]);
+  pays.push({id,farmerId:fid,farmerName:farmer?.name||'',amount,method,date:gv('fpayDate')||today(),note:gv('fpayNote')});
+  W('farmerPayments',pays);
+  W('farmers',R('farmers',[]).map(f=>f.id===fid?{...f,balance:+(f.balance-amount).toFixed(2)}:f));
+  addTMauto('صرف','الخزينة الرئيسية',amount,method,'سداد للمزارع '+farmer?.name);
+  jEntry('سداد للمزارع '+farmer?.name,[{acc:'ذمم دائنة - مزارعون',dr:amount,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:amount}]);
+  ['fpayFarmerId','fpayFarmerS','fpayAmount','fpayNote'].forEach(i=>sv(i,''));
+  document.getElementById('fpayFarmerChip').style.display='none';
+  renderFarmers();alert('تم تسجيل السداد ✓ | '+money(amount));
+}
+
+// ══════════ FACTORIES ══════════
+function addFactory(){
+  const name=gv('facName').trim();if(!name)return alert('أدخل اسم المصنع');
+  const id=nid('factory',1);const f=R('factories',[]);
+  f.push({id,name,phone:gv('facPhone'),contact:gv('facContact'),address:gv('facAddress'),note:gv('facNote'),balance:0});
+  W('factories',f);['facName','facPhone','facContact','facAddress','facNote'].forEach(i=>sv(i,''));
+  renderFactories();alert('تم إضافة المصنع #'+id+' ✓');
+}
+function renderFactories(){
+  const t=document.getElementById('factoriesTable');const facts=R('factories',[]);
+  if(!facts.length){t.innerHTML='<tr><td class="no-data" colspan="6">لا توجد مصانع</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>المصنع</th><th>المسؤول</th><th>التليفون</th><th>العنوان</th><th>الرصيد (ذمم)</th></tr>'+
+    facts.map(f=>'<tr><td>'+f.id+'</td><td><b>'+f.name+'</b></td><td>'+f.contact+'</td><td>'+f.phone+'</td><td>'+f.address+'</td><td class="'+(f.balance>0?'ts':'tm')+'"><b>'+money(f.balance)+'</b></td></tr>').join('');
+  const t2=document.getElementById('factoryMovTable');const movs=R('factoryCollections',[]);
+  if(!movs.length){t2.innerHTML='<tr><td class="no-data" colspan="5">لا توجد تحصيلات</td></tr>';return;}
+  t2.innerHTML='<tr><th>المصنع</th><th>المبلغ</th><th>الطريقة</th><th>التاريخ</th><th>ملاحظات</th></tr>'+
+    movs.slice().reverse().map(m=>'<tr><td>'+m.factName+'</td><td class="ts"><b>'+money(m.amount)+'</b></td><td>'+m.method+'</td><td>'+fd(m.date)+'</td><td>'+m.note+'</td></tr>').join('');
+}
+function collectFactory(){
+  const fid=+gv('fcollFactId');if(!fid)return alert('اختر المصنع');
+  const amount=+gv('fcollAmount');if(!amount)return alert('أدخل المبلغ');
+  const method=gv('fcollMethod');const fact=R('factories',[]).find(f=>f.id===fid);
+  const id=nid('factColl',1);const colls=R('factoryCollections',[]);
+  colls.push({id,factoryId:fid,factName:fact?.name||'',amount,method,date:gv('fcollDate')||today(),note:gv('fcollNote')});
+  W('factoryCollections',colls);
+  W('factories',R('factories',[]).map(f=>f.id===fid?{...f,balance:+(f.balance-amount).toFixed(2)}:f));
+  addTMauto('قبض','الخزينة الرئيسية',amount,method,'تحصيل من '+fact?.name);
+  jEntry('تحصيل من مصنع '+fact?.name,[{acc:'الخزينة الرئيسية',dr:amount,cr:0},{acc:'ذمم مدينة - مصانع',dr:0,cr:amount}]);
+  ['fcollFactId','fcollFactS','fcollAmount','fcollNote'].forEach(i=>sv(i,''));
+  document.getElementById('fcollFactChip').style.display='none';
+  renderFactories();alert('تم تسجيل التحصيل ✓ | '+money(amount));
+}
+
+// ══════════ WORKERS ══════════
+function addWorker(){
+  const name=gv('wkName').trim();if(!name)return alert('أدخل الاسم');
+  const id=nid('worker',1);const w=R('workers',[]);
+  w.push({id,name,type:gv('wkType'),phone:gv('wkPhone'),salary:+gv('wkSalary')||0,salaryUnit:gv('wkSalaryUnit'),note:gv('wkNote'),due:0});
+  W('workers',w);['wkName','wkPhone','wkSalary','wkNote'].forEach(i=>sv(i,''));
+  renderWorkers();alert('تم إضافة الموظف ✓');
+}
+function renderWorkers(){
+  const t=document.getElementById('workersTable');const ws=R('workers',[]);
+  if(!ws.length){t.innerHTML='<tr><td class="no-data" colspan="6">لا توجد عمالة</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>الاسم</th><th>النوع</th><th>الأجر</th><th>الوحدة</th><th>الموبايل</th></tr>'+
+    ws.map(w=>'<tr><td>'+w.id+'</td><td><b>'+w.name+'</b></td><td><span class="badge bm">'+w.type+'</span></td><td>'+money(w.salary)+'</td><td>'+w.salaryUnit+'</td><td>'+w.phone+'</td></tr>').join('');
+  const t2=document.getElementById('wagesTable');const wages=R('wages',[]);
+  if(!wages.length){t2.innerHTML='<tr><td class="no-data" colspan="6">لا توجد أجور</td></tr>';return;}
+  t2.innerHTML='<tr><th>الموظف</th><th>المبلغ</th><th>الطريقة</th><th>التاريخ</th><th>مرتبط بـ</th><th>ملاحظات</th></tr>'+
+    wages.slice().reverse().map(w=>'<tr><td>'+w.workerName+'</td><td class="td"><b>'+money(w.amount)+'</b></td><td>'+w.method+'</td><td>'+fd(w.date)+'</td><td>'+w.ref+'</td><td>'+w.note+'</td></tr>').join('');
+}
+function payWorker(){
+  const wid=+gv('wpayWkId');if(!wid)return alert('اختر الموظف');
+  const amount=+gv('wpayAmount');if(!amount)return alert('أدخل المبلغ');
+  const worker=R('workers',[]).find(w=>w.id===wid);
+  const id=nid('wage',1);const wages=R('wages',[]);
+  wages.push({id,workerId:wid,workerName:worker?.name||'',amount,method:gv('wpayMethod'),date:gv('wpayDate')||today(),ref:gv('wpayRef'),note:gv('wpayNote')});
+  W('wages',wages);
+  addTMauto('صرف','الخزينة الرئيسية',amount,gv('wpayMethod'),'أجر '+worker?.name);
+  jEntry('أجر '+worker?.name,[{acc:'رواتب وأجور',dr:amount,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:amount}]);
+  ['wpayWkId','wpayWkS','wpayAmount','wpayNote'].forEach(i=>sv(i,''));
+  document.getElementById('wpayWkChip').style.display='none';
+  renderWorkers();alert('تم تسجيل الأجر ✓ | '+money(amount));
+}
+
+// ══════════ TREASURY ══════════
+function addTM(){
+  const amount=+gv('tmAmount');if(!amount)return alert('أدخل المبلغ');
+  const t=R('treasury',[]);
+  t.push({id:'T-'+Date.now(),date:gv('tmDate')||now(),type:gv('tmType'),account:gv('tmAccount'),amount,method:gv('tmMethod'),desc:gv('tmDesc')});
+  W('treasury',t);sv('tmAmount','');sv('tmDesc','');
+  renderTreasuryKpi();renderTreasury();alert('تم تسجيل الحركة ✓');
+}
+function renderTreasuryKpi(){
+  const t=R('treasury',[]);const td=today();
+  const tT=t.filter(x=>x.date.startsWith(td));
+  const tIn=tT.filter(x=>x.type==='قبض').reduce((s,x)=>s+x.amount,0);
+  const tOut=tT.filter(x=>x.type==='صرف').reduce((s,x)=>s+x.amount,0);
+  const totIn=t.filter(x=>x.type==='قبض').reduce((s,x)=>s+x.amount,0);
+  const totOut=t.filter(x=>x.type==='صرف').reduce((s,x)=>s+x.amount,0);
+  document.getElementById('treasuryKpi').innerHTML=kpiRow([
+    {l:'رصيد الخزينة الكلي',v:money(totIn-totOut),i:'💰',c:'var(--primary)'},
+    {l:'قبض اليوم',v:money(tIn),i:'📥',c:'var(--success)'},
+    {l:'صرف اليوم',v:money(tOut),i:'📤',c:'var(--danger)'},
+    {l:'صافي اليوم',v:money(tIn-tOut),i:'📊',c:'var(--info)'},
+  ]);
+  // أرصدة الخزائن
+  const accounts=['الخزينة الرئيسية','البنك الأهلي','بنك مصر','خزينة المزرعة'];
+  document.getElementById('treasuryBalances').innerHTML=accounts.map(acc=>{
+    const bal=t.filter(x=>x.account===acc).reduce((s,x)=>s+(x.type==='قبض'?x.amount:-x.amount),0);
+    return '<div class="fb mt1" style="padding:8px 0;border-bottom:1px solid var(--border);"><span>'+acc+'</span><b class="'+(bal>0?'ts':'td')+'">'+money(bal)+'</b></div>';
+  }).join('');
+}
+function renderTreasury(){
+  const filter=gv('tmFilter');const from=gv('tmFrom');const to=gv('tmTo');
+  let t=R('treasury',[]).slice().reverse();
+  if(filter)t=t.filter(x=>x.account===filter);
+  if(from)t=t.filter(x=>x.date>=from);
+  if(to)t=t.filter(x=>x.date<=to+'T23:59:59');
+  const el=document.getElementById('treasuryTable');
+  if(!t.length){el.innerHTML='<tr><td class="no-data" colspan="6">لا توجد حركات</td></tr>';return;}
+  el.innerHTML='<tr><th>التاريخ</th><th>النوع</th><th>الخزينة/البنك</th><th>البيان</th><th>المبلغ</th><th>الوسيلة</th></tr>'+
+    t.map(x=>'<tr><td>'+fdt(x.date)+'</td><td><span class="badge '+(x.type==='قبض'?'bs':'bd')+'">'+x.type+'</span></td><td>'+x.account+'</td><td>'+x.desc+'</td><td class="'+(x.type==='قبض'?'ts':'td')+'"><b>'+money(x.amount)+'</b></td><td>'+x.method+'</td></tr>').join('');
+}
+
+// ══════════ CHEQUES ══════════
+function addCheque(){
+  const num=gv('chkNum').trim();const amount=+gv('chkAmount');
+  if(!num||!amount)return alert('أدخل رقم الشيك والمبلغ');
+  const id=nid('cheque',1);const chks=R('cheques',[]);
+  chks.push({id,type:gv('chkType'),number:num,bank:gv('chkBank'),name:gv('chkName'),amount,date:gv('chkDate')||today(),due:gv('chkDue'),note:gv('chkNote'),status:'معلق'});
+  W('cheques',chks);['chkNum','chkBank','chkName','chkAmount','chkDue','chkNote'].forEach(i=>sv(i,''));
+  renderCheques();alert('تم تسجيل الشيك ✓');
+}
+function renderCheques(){
+  const typeF=gv('chkFilterType');const statF=gv('chkFilterStatus');
+  let chks=R('cheques',[]).filter(c=>(!typeF||c.type===typeF)&&(!statF||c.status===statF));
+  const t=document.getElementById('chkTable');
+  if(!chks.length){t.innerHTML='<tr><td class="no-data" colspan="9">لا توجد شيكات</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>النوع</th><th>رقم الشيك</th><th>البنك</th><th>الاسم</th><th>المبلغ</th><th>الإصدار</th><th>الاستحقاق</th><th>الحالة</th><th>إجراء</th></tr>'+
+    chks.slice().reverse().map(c=>'<tr><td>'+c.id+'</td><td><span class="badge '+(c.type==='مقبوض'?'bs':'bd')+'">'+c.type+'</span></td><td>'+c.number+'</td><td>'+c.bank+'</td><td>'+c.name+'</td><td><b>'+money(c.amount)+'</b></td><td>'+fd(c.date)+'</td><td>'+fd(c.due)+'</td><td><span class="badge '+(c.status==='معلق'?'bw':c.status==='محصّل'?'bs':'bd')+'">'+c.status+'</span></td><td>'+
+      (c.status==='معلق'?'<button class="btn btn-sm btn-success" onclick="updateCheque('+c.id+',\'محصّل\')">تحصيل</button> <button class="btn btn-sm btn-danger" onclick="updateCheque('+c.id+',\'مرتجع\')">مرتجع</button>':'—')+
+      '</td></tr>').join('');
+  // قادمة للاستحقاق
+  const soon=R('cheques',[]).filter(c=>c.status==='معلق'&&c.due&&new Date(c.due)<=new Date(Date.now()+7*86400000));
+  const alertEl=document.getElementById('chkDueAlert');
+  if(alertEl) alertEl.innerHTML=soon.length?'<div class="alert alert-w">⚠️ '+soon.length+' شيكات تستحق خلال 7 أيام — إجمالي: '+money(soon.reduce((s,c)=>s+c.amount,0))+'</div>':'<div class="alert alert-s">✅ لا توجد شيكات مستحقة قريباً</div>';
+  const dt=document.getElementById('chkDueTable');
+  if(dt) dt.innerHTML=soon.length?'<tr><th>رقم الشيك</th><th>الاسم</th><th>المبلغ</th><th>الاستحقاق</th></tr>'+soon.map(c=>'<tr><td>'+c.number+'</td><td>'+c.name+'</td><td><b>'+money(c.amount)+'</b></td><td>'+fd(c.due)+'</td></tr>').join(''):'';
+}
+function updateCheque(id,status){
+  W('cheques',R('cheques',[]).map(c=>c.id===id?{...c,status}:c));
+  const c=R('cheques',[]).find(x=>x.id===id);
+  if(status==='محصّل'&&c){addTMauto(c.type==='مقبوض'?'قبض':'صرف','الخزينة الرئيسية',c.amount,'شيك','شيك '+c.type+' #'+c.number+' - '+c.name);}
+  renderCheques();alert('تم تحديث حالة الشيك ✓');
+}
+
+// ══════════ ACCOUNTS ══════════
+function jEntry(desc,lines){const j=R('journal',[]);const id=nid('journal',1);j.push({id,date:now(),desc,lines,auto:true});W('journal',j);}
+function coaOpts(){const coa=R('coa',[]);const leaves=coa.filter(c=>!coa.some(x=>x.parent===c.code));return leaves.map(c=>'<option value="'+c.name+'">'+c.code+' - '+c.name+'</option>').join('');}
+function initJForm(){
+  const jDate=document.getElementById('jDate');if(jDate&&!jDate.value)jDate.value=today();
+  const lines=document.getElementById('jLines');
+  if(!lines.innerHTML.trim()){lines.innerHTML='';for(let i=0;i<2;i++)addJLine();}
+}
+function addJLine(){
+  const opts=coaOpts();const d=document.createElement('div');
+  d.className='fr3';d.style.cssText='gap:8px;margin-bottom:8px;';
+  d.innerHTML='<div class="field" style="margin:0;"><label>الحساب</label><select class="jAcc" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:7px;font-size:13px;">'+opts+'</select></div>'+
+    '<div class="field" style="margin:0;"><label>مدين (ج)</label><input type="number" class="jDr" value="0" min="0" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:7px;"></div>'+
+    '<div class="field" style="margin:0;"><label>دائن (ج)</label><input type="number" class="jCr" value="0" min="0" style="width:100%;padding:8px;border:1px solid var(--border);border-radius:7px;"></div>';
+  document.getElementById('jLines').appendChild(d);
+}
+function saveJEntry(){
+  const desc=gv('jDesc').trim();if(!desc)return alert('أدخل البيان');
+  const lines=[];let totDr=0,totCr=0;
+  document.querySelectorAll('.jAcc').forEach((acc,i)=>{
+    const dr=+acc.parentElement.parentElement.querySelector('.jDr').value||0;
+    const cr=+acc.parentElement.parentElement.querySelector('.jCr').value||0;
+    if(dr>0||cr>0){lines.push({acc:acc.value,dr,cr});totDr+=dr;totCr+=cr;}
+  });
+  if(!lines.length)return alert('أدخل سطور القيد');
+  const bal=document.getElementById('jBal');
+  if(Math.abs(totDr-totCr)>0.01){bal.style.display='block';bal.className='alert alert-d';bal.textContent='القيد غير متوازن! مدين: '+money(totDr)+' — دائن: '+money(totCr);return;}
+  jEntry(desc,lines);
+  sv('jDesc','');document.querySelectorAll('.jDr,.jCr').forEach(i=>i.value=0);
+  bal.style.display='block';bal.className='alert alert-s';bal.textContent='تم حفظ القيد ✓ — '+money(totDr);
+  renderJournal();
+}
+function renderJournal(){
+  const t=document.getElementById('jTable');const j=R('journal',[]).slice().reverse().slice(0,100);
+  if(!j.length){t.innerHTML='<tr><td class="no-data" colspan="5">لا توجد قيود</td></tr>';return;}
+  t.innerHTML='<tr><th>#</th><th>التاريخ</th><th>البيان</th><th>مدين</th><th>دائن</th><th>تلقائي</th></tr>'+
+    j.map(e=>{const dr=e.lines.reduce((s,l)=>s+l.dr,0);const cr=e.lines.reduce((s,l)=>s+l.cr,0);
+      return '<tr><td>'+e.id+'</td><td>'+fd(e.date)+'</td><td>'+e.desc+'</td><td>'+money(dr)+'</td><td>'+money(cr)+'</td><td><span class="badge '+(e.auto?'bi':'bm')+'">'+(e.auto?'تلقائي':'يدوي')+'</span></td></tr>';}).join('');
+}
+function renderCOA(){
+  const coa=R('coa',[]);const colors={asset:'bs',liability:'bd',equity:'bp',revenue:'bi',expense:'bw'};
+  let html='';
+  function node(c,lvl){
+    html+='<div style="padding:7px 0 7px '+(lvl*24)+'px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">'+
+      '<span class="badge '+colors[c.type]+'">'+c.code+'</span><span style="font-weight:'+(lvl===0?800:lvl===1?600:400)+'">'+c.name+'</span></div>';
+    coa.filter(x=>x.parent===c.code).forEach(child=>node(child,lvl+1));
+  }
+  coa.filter(c=>!c.parent).forEach(r=>node(r,0));
+  document.getElementById('coaTree').innerHTML=html||'<div class="no-data">لا توجد بيانات</div>';
+}
+function renderTB(){
+  const j=R('journal',[]);const bals={};
+  j.forEach(e=>e.lines.forEach(l=>{if(!bals[l.acc])bals[l.acc]={dr:0,cr:0};bals[l.acc].dr+=l.dr;bals[l.acc].cr+=l.cr;}));
+  const rows=Object.entries(bals).filter(([,b])=>b.dr>0||b.cr>0);
+  const t=document.getElementById('tbTable');
+  if(!rows.length){t.innerHTML='<tr><td class="no-data">لا توجد قيود</td></tr>';return;}
+  const totDr=rows.reduce((s,[,b])=>s+b.dr,0);const totCr=rows.reduce((s,[,b])=>s+b.cr,0);
+  t.innerHTML='<tr><th>الحساب</th><th>مجموع مدين</th><th>مجموع دائن</th><th>الرصيد</th></tr>'+
+    rows.map(([acc,b])=>'<tr><td>'+acc+'</td><td>'+money(b.dr)+'</td><td>'+money(b.cr)+'</td><td class="'+(b.dr>=b.cr?'td':'ts')+'">'+money(Math.abs(b.dr-b.cr))+(b.dr>b.cr?' م':' د')+'</td></tr>').join('')+
+    '<tr style="font-weight:800;background:#f0f4f8;"><td>الإجمالي</td><td>'+money(totDr)+'</td><td>'+money(totCr)+'</td><td class="'+(Math.abs(totDr-totCr)<0.01?'ts':'td')+'">'+(Math.abs(totDr-totCr)<0.01?'✅ متوازن':'⚠️ '+money(Math.abs(totDr-totCr)))+'</td></tr>';
+}
+function renderPL(){
+  const j=R('journal',[]);const bals={};
+  j.forEach(e=>e.lines.forEach(l=>{if(!bals[l.acc])bals[l.acc]={dr:0,cr:0};bals[l.acc].dr+=l.dr;bals[l.acc].cr+=l.cr;}));
+  const coa=R('coa',[]);
+  const revAccs=coa.filter(c=>c.type==='revenue').map(c=>c.name);
+  const expAccs=coa.filter(c=>c.type==='expense').map(c=>c.name);
+  const totRev=revAccs.reduce((s,acc)=>{const b=bals[acc];return s+(b?(b.cr-b.dr):0);},0);
+  const totExp=expAccs.reduce((s,acc)=>{const b=bals[acc];return s+(b?(b.dr-b.cr):0);},0);
+  const profit=totRev-totExp;
+  document.getElementById('plResult').innerHTML=
+    '<div class="g2"><div><div class="card-title">📈 الإيرادات</div>'+revAccs.filter(acc=>bals[acc]).map(acc=>{const b=bals[acc];const v=b.cr-b.dr;return '<div class="fb" style="padding:6px 0;border-bottom:1px solid var(--border);"><span>'+acc+'</span><b class="ts">'+money(v)+'</b></div>';}).join('')+
+    '<div class="fb fw7 mt1"><span>إجمالي الإيرادات</span><b class="ts">'+money(totRev)+'</b></div></div>'+
+    '<div><div class="card-title">💸 المصروفات</div>'+expAccs.filter(acc=>bals[acc]).map(acc=>{const b=bals[acc];const v=b.dr-b.cr;return '<div class="fb" style="padding:6px 0;border-bottom:1px solid var(--border);"><span>'+acc+'</span><b class="td">'+money(v)+'</b></div>';}).join('')+
+    '<div class="fb fw7 mt1"><span>إجمالي المصروفات</span><b class="td">'+money(totExp)+'</b></div></div></div>'+
+    '<div class="divider"></div><div class="fb fw8" style="font-size:18px;padding:10px 0;"><span>صافي الربح / الخسارة</span><span class="'+(profit>=0?'ts':'td')+'">'+money(profit)+'</span></div>';
+}
+
+// ══════════ REPORTS ══════════
+function initRptDates(){const f=document.getElementById('rFrom');const t=document.getElementById('rTo');if(!f.value)f.value=today().slice(0,7)+'-01';if(!t.value)t.value=today();}
+function rTypeChanged(){
+  const type=gv('rType');const cont=document.getElementById('rSmartFilters');cont.innerHTML='';
+  if(type==='supply_profit'||type==='purchases'||type==='sales'){
+    const facts=R('factories',[]);const farmers=R('farmers',[]);
+    cont.innerHTML='<div class="field"><label>المصنع</label><select id="rFactory" onchange="renderRpt()"><option value="">كل المصانع</option>'+facts.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>المزارع</label><select id="rFarmer" onchange="renderRpt()"><option value="">كل المزارعين</option>'+farmers.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>الموسم</label><select id="rSeason" onchange="renderRpt()"><option value="">كل المواسم</option>'+[...new Set(R('purchases',[]).map(p=>p.season))].map(s=>'<option>'+s+'</option>').join('')+'</select></div>';
+  } else if(type==='farm_profit'){
+    const farms=R('farms',[]);
+    cont.innerHTML='<div class="field"><label>المزرعة</label><select id="rFarm" onchange="renderRpt()"><option value="">كل المزارع</option>'+farms.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('')+'</select></div>';
+  } else if(type==='treasury'){
+    cont.innerHTML='<div class="field"><label>الخزينة/البنك</label><select id="rTAcc" onchange="renderRpt()"><option value="">الكل</option><option>الخزينة الرئيسية</option><option>البنك الأهلي</option><option>بنك مصر</option></select></div>'+
+      '<div class="field"><label>نوع الحركة</label><select id="rTType" onchange="renderRpt()"><option value="">الكل</option><option value="قبض">قبض</option><option value="صرف">صرف</option></select></div>';
+  } else if(type==='workers_wages'){
+    const ws=R('workers',[]);
+    cont.innerHTML='<div class="field"><label>الموظف/العامل</label><select id="rWorker" onchange="renderRpt()"><option value="">الكل</option>'+ws.map(w=>'<option value="'+w.id+'">'+w.name+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label>النوع</label><select id="rWType" onchange="renderRpt()"><option value="">الكل</option><option>موظف</option><option>عامل يومي</option><option>مقاول</option></select></div>';
+  }
+  renderRpt();
+}
+function renderRpt(){
+  const type=gv('rType');const from=gv('rFrom');const to=gv('rTo');
+  const t=document.getElementById('rTable');const sum=document.getElementById('rSummary');
+  const inR=d=>(!from||d>=from)&&(!to||d<=to+'T23:59:59');
+  const gvS=id=>{const el=document.getElementById(id);return el?el.value:'';};
+  const kRow=items=>kpiRow(items);
+
+  if(type==='supply_profit'||type==='factory_profit'){
+    let sales=R('sales',[]).filter(s=>inR(s.date));
+    const fid=gvS('rFactory');if(fid)sales=sales.filter(s=>String(s.factoryId)===fid);
+    const purs=R('purchases',[]);const procs=R('processing',[]);
+    const rows=sales.map(s=>{
+      const rev=s.total;const pur=purs.find(p=>p.id===s.purchaseId);const proc=procs.find(p=>p.purchaseId===s.purchaseId);
+      const purCost=pur?pur.total:0;const procCost=proc?proc.totalCost:0;const transCost=s.transport+s.extra;
+      const totalCost=+(purCost+procCost+transCost).toFixed(2);const profit=+(rev-totalCost).toFixed(2);
+      return {sale:s,rev,purCost,procCost,transCost,totalCost,profit};
+    });
+    const totRev=rows.reduce((s,r)=>s+r.rev,0);const totCost=rows.reduce((s,r)=>s+r.totalCost,0);const totP=rows.reduce((s,r)=>s+r.profit,0);
+    sum.innerHTML=kRow([{l:'إجمالي الإيرادات',v:money(totRev),i:'💰',c:'var(--accent)'},{l:'إجمالي التكاليف',v:money(totCost),i:'💸',c:'var(--danger)'},{l:'صافي الربح',v:money(totP),i:'📈',c:totP>=0?'var(--success)':'var(--danger)'},{l:'هامش الربح',v:(totRev>0?((totP/totRev)*100).toFixed(1):0)+'%',i:'📊',c:'var(--info)'}]);
+    t.innerHTML='<tr><th>#</th><th>المصنع</th><th>التاريخ</th><th>الإيراد</th><th>تكلفة الشراء</th><th>تكلفة التجهيز</th><th>تكلفة النقل</th><th>إجمالي التكاليف</th><th>صافي الربح</th></tr>'+
+      (rows.length?rows.map(r=>'<tr><td>#'+r.sale.id+'</td><td>'+r.sale.factoryName+'</td><td>'+fd(r.sale.date)+'</td><td>'+money(r.rev)+'</td><td>'+money(r.purCost)+'</td><td>'+money(r.procCost)+'</td><td>'+money(r.transCost)+'</td><td>'+money(r.totalCost)+'</td><td class="'+(r.profit>=0?'ts':'td')+'"><b>'+money(r.profit)+'</b></td></tr>').join(''):'<tr><td class="no-data" colspan="9">لا توجد بيانات</td></tr>');
+  }
+  else if(type==='farm_profit'){
+    const farms=R('farms',[]);const exps=R('farmExpenses',[]);const prods=R('farmProduction',[]);
+    const fid=gvS('rFarm');
+    const fList=fid?farms.filter(f=>String(f.id)===fid):farms;
+    sum.innerHTML='';
+    t.innerHTML='<tr><th>المزرعة</th><th>الموسم</th><th>المساحة</th><th>إجمالي المصروفات</th><th>إجمالي الإيرادات</th><th>صافي الربح/الخسارة</th><th>كمية الإنتاج كجم</th></tr>'+
+      fList.map(f=>{const fe=exps.filter(e=>e.farmId===f.id&&inR(e.date));const fp=prods.filter(p=>p.farmId===f.id&&inR(p.date));const totE=fe.reduce((s,e)=>s+e.cost,0);const totR=fp.reduce((s,p)=>s+p.revenue,0);const totQ=fp.reduce((s,p)=>s+p.qty,0);const profit=totR-totE;
+        return '<tr><td><b>'+f.name+'</b></td><td>'+f.season+'</td><td>'+f.area+' فدان</td><td class="td">'+money(totE)+'</td><td class="ts">'+money(totR)+'</td><td class="'+(profit>=0?'ts':'td')+'"><b>'+money(profit)+'</b></td><td>'+totQ.toLocaleString('ar-EG')+'</td></tr>';}).join('')||'<tr><td class="no-data" colspan="7">لا توجد بيانات</td></tr>';
+  }
+  else if(type==='farmer_balance'){
+    const farmers=R('farmers',[]);const purs=R('purchases',[]);const pays=R('farmerPayments',[]);
+    sum.innerHTML=kRow([{l:'إجمالي المزارعين',v:farmers.length,i:'👨‍🌾',c:'var(--accent)'},{l:'إجمالي المديونيات',v:money(farmers.reduce((s,f)=>s+f.balance,0)),i:'💸',c:'var(--danger)'}]);
+    t.innerHTML='<tr><th>#</th><th>المزارع</th><th>المنطقة</th><th>إجمالي الشراء</th><th>إجمالي المدفوع</th><th>الرصيد</th></tr>'+
+      farmers.map(f=>{const fp=purs.filter(p=>p.farmerId===f.id);const tp=fp.reduce((s,p)=>s+p.total,0);const paid=pays.filter(p=>p.farmerId===f.id).reduce((s,p)=>s+p.amount,0);
+        return '<tr><td>'+f.id+'</td><td><b>'+f.name+'</b></td><td>'+f.area+'</td><td>'+money(tp)+'</td><td class="ts">'+money(paid)+'</td><td class="'+(f.balance>0?'td':'ts')+'"><b>'+money(f.balance)+'</b></td></tr>';}).join('');
+  }
+  else if(type==='factory_balance'){
+    const facts=R('factories',[]);const sales=R('sales',[]);const colls=R('factoryCollections',[]);
+    sum.innerHTML=kRow([{l:'إجمالي المصانع',v:facts.length,i:'🏭',c:'var(--accent)'},{l:'إجمالي الذمم',v:money(facts.reduce((s,f)=>s+f.balance,0)),i:'💰',c:'var(--success)'}]);
+    t.innerHTML='<tr><th>#</th><th>المصنع</th><th>إجمالي التوريد</th><th>إجمالي التحصيل</th><th>الرصيد</th></tr>'+
+      facts.map(f=>{const fs=sales.filter(s=>s.factoryId===f.id);const ts=fs.reduce((s,x)=>s+x.total,0);const tc=colls.filter(c=>c.factoryId===f.id).reduce((s,c)=>s+c.amount,0);
+        return '<tr><td>'+f.id+'</td><td><b>'+f.name+'</b></td><td>'+money(ts)+'</td><td class="ts">'+money(tc)+'</td><td class="'+(f.balance>0?'ts':'td')+'"><b>'+money(f.balance)+'</b></td></tr>';}).join('');
+  }
+  else if(type==='purchases'){
+    let purs=R('purchases',[]).filter(p=>inR(p.date));
+    const fid=gvS('rFarmer');if(fid)purs=purs.filter(p=>String(p.farmerId)===fid);
+    const season=gvS('rSeason');if(season)purs=purs.filter(p=>p.season===season);
+    const totW=purs.reduce((s,p)=>s+p.weight,0);const totV=purs.reduce((s,p)=>s+p.total,0);
+    sum.innerHTML=kRow([{l:'عدد العمليات',v:purs.length,i:'📦',c:'var(--accent)'},{l:'إجمالي الوزن كجم',v:totW.toLocaleString('ar-EG'),i:'⚖️',c:'var(--primary)'},{l:'إجمالي القيمة',v:money(totV),i:'💰',c:'var(--success)'}]);
+    t.innerHTML='<tr><th>#</th><th>المزارع</th><th>التاريخ</th><th>الموسم</th><th>البرانيك</th><th>الوزن كجم</th><th>السعر</th><th>الإجمالي</th><th>المدفوع</th><th>المتبقي</th></tr>'+
+      (purs.length?purs.slice().reverse().map(p=>'<tr><td>#'+p.id+'</td><td>'+p.farmerName+'</td><td>'+fd(p.date)+'</td><td>'+p.season+'</td><td>'+p.units+'</td><td>'+p.weight.toLocaleString('ar-EG')+'</td><td>'+money(p.price)+'</td><td>'+money(p.total)+'</td><td class="ts">'+money(p.paid)+'</td><td class="'+(p.remaining>0?'td':'ts')+'">'+money(p.remaining)+'</td></tr>').join(''):'<tr><td class="no-data" colspan="10">لا توجد بيانات</td></tr>');
+  }
+  else if(type==='sales'){
+    let sales=R('sales',[]).filter(s=>inR(s.date));
+    const fid=gvS('rFactory');if(fid)sales=sales.filter(s=>String(s.factoryId)===fid);
+    const totW=sales.reduce((s,x)=>s+x.weight,0);const totV=sales.reduce((s,x)=>s+x.total,0);
+    sum.innerHTML=kRow([{l:'عدد التوريدات',v:sales.length,i:'🚚',c:'var(--accent)'},{l:'إجمالي الوزن كجم',v:totW.toLocaleString('ar-EG'),i:'⚖️',c:'var(--primary)'},{l:'إجمالي القيمة',v:money(totV),i:'💰',c:'var(--success)'}]);
+    t.innerHTML='<tr><th>#</th><th>المصنع</th><th>التاريخ</th><th>الوزن كجم</th><th>السعر</th><th>الإجمالي</th><th>النقل</th><th>الدفع</th></tr>'+
+      (sales.length?sales.slice().reverse().map(s=>'<tr><td>#'+s.id+'</td><td>'+s.factoryName+'</td><td>'+fd(s.date)+'</td><td>'+s.weight.toLocaleString('ar-EG')+'</td><td>'+money(s.price)+'</td><td>'+money(s.total)+'</td><td>'+money(s.transport)+'</td><td><span class="badge '+(s.method==='كاش'?'bs':'bw')+'">'+s.method+'</span></td></tr>').join(''):'<tr><td class="no-data" colspan="8">لا توجد بيانات</td></tr>');
+  }
+  else if(type==='treasury'){
+    let rows=R('treasury',[]).filter(x=>inR(x.date));
+    const acc=gvS('rTAcc');if(acc)rows=rows.filter(x=>x.account===acc);
+    const ttype=gvS('rTType');if(ttype)rows=rows.filter(x=>x.type===ttype);
+    const tIn=rows.filter(x=>x.type==='قبض').reduce((s,x)=>s+x.amount,0);
+    const tOut=rows.filter(x=>x.type==='صرف').reduce((s,x)=>s+x.amount,0);
+    sum.innerHTML=kRow([{l:'إجمالي القبض',v:money(tIn),i:'📥',c:'var(--success)'},{l:'إجمالي الصرف',v:money(tOut),i:'📤',c:'var(--danger)'},{l:'الصافي',v:money(tIn-tOut),i:'💰',c:'var(--primary)'}]);
+    t.innerHTML='<tr><th>التاريخ</th><th>النوع</th><th>الحساب</th><th>البيان</th><th>المبلغ</th><th>الوسيلة</th></tr>'+
+      (rows.length?rows.slice().reverse().map(x=>'<tr><td>'+fdt(x.date)+'</td><td><span class="badge '+(x.type==='قبض'?'bs':'bd')+'">'+x.type+'</span></td><td>'+x.account+'</td><td>'+x.desc+'</td><td class="'+(x.type==='قبض'?'ts':'td')+'"><b>'+money(x.amount)+'</b></td><td>'+x.method+'</td></tr>').join(''):'<tr><td class="no-data" colspan="6">لا توجد بيانات</td></tr>');
+  }
+  else if(type==='agro_stock'){
+    const items=R('agroItems',[]);const irItems=R('irrigItems',[]);
+    sum.innerHTML=kRow([{l:'مبيدات وأسمدة',v:items.length+' صنف',i:'🧪',c:'var(--accent)'},{l:'ري حديث',v:irItems.length+' صنف',i:'💧',c:'var(--info)'},{l:'تحت الحد',v:items.filter(i=>i.qty<i.reorder).length+irItems.filter(i=>i.qty<i.reorder).length+' صنف',i:'⚠️',c:'var(--warning)'}]);
+    t.innerHTML='<tr><th>الصنف</th><th>الفئة</th><th>النوع</th><th>الكمية</th><th>سعر البيع</th><th>قيمة المخزون</th><th>الحالة</th></tr>'+
+      [...items.map(i=>({...i,cat:'مبيدات/أسمدة'})),...irItems.map(i=>({...i,cat:'ري'}))]
+      .map(i=>'<tr><td>'+i.name+'</td><td><span class="badge bi">'+i.cat+'</span></td><td>'+i.type+'</td><td>'+i.qty+' '+i.unit+'</td><td>'+money(i.price)+'</td><td>'+money(i.cost*i.qty)+'</td><td><span class="badge '+(i.qty<i.reorder?'bd':'bs')+'">'+(i.qty<i.reorder?'⚠️ تحت الحد':'✅ كافي')+'</span></td></tr>').join('');
+  }
+  else if(type==='workers_wages'){
+    let wages=R('wages',[]).filter(w=>inR(w.date));
+    const wid=gvS('rWorker');if(wid)wages=wages.filter(w=>String(w.workerId)===wid);
+    const totW=wages.reduce((s,w)=>s+w.amount,0);
+    sum.innerHTML=kRow([{l:'عدد عمليات الصرف',v:wages.length,i:'💵',c:'var(--accent)'},{l:'إجمالي الأجور',v:money(totW),i:'💸',c:'var(--danger)'}]);
+    t.innerHTML='<tr><th>الموظف</th><th>المبلغ</th><th>الطريقة</th><th>التاريخ</th><th>مرتبط بـ</th><th>ملاحظات</th></tr>'+
+      (wages.length?wages.slice().reverse().map(w=>'<tr><td>'+w.workerName+'</td><td class="td"><b>'+money(w.amount)+'</b></td><td>'+w.method+'</td><td>'+fd(w.date)+'</td><td>'+w.ref+'</td><td>'+w.note+'</td></tr>').join(''):'<tr><td class="no-data" colspan="6">لا توجد بيانات</td></tr>');
+  }
+  else if(type==='transport_cost'){
+    const trips=R('trips',[]).filter(t=>inR(t.date));const maints=R('maintenances',[]).filter(m=>inR(m.date));
+    const totTrip=trips.reduce((s,t)=>s+t.cost,0);const totMaint=maints.reduce((s,m)=>s+m.cost,0);
+    sum.innerHTML=kRow([{l:'عدد النقلات',v:trips.length,i:'🚛',c:'var(--accent)'},{l:'تكلفة النقلات',v:money(totTrip),i:'💸',c:'var(--danger)'},{l:'تكلفة الصيانة',v:money(totMaint),i:'🔧',c:'var(--warning)'},{l:'إجمالي تكاليف النقل',v:money(totTrip+totMaint),i:'💰',c:'var(--primary)'}]);
+    t.innerHTML='<tr><th>السيارة</th><th>السائق</th><th>التاريخ</th><th>من</th><th>إلى</th><th>الحمولة</th><th>الوقود</th><th>التكلفة</th></tr>'+
+      (trips.length?trips.slice().reverse().map(x=>'<tr><td>'+x.vehiclePlate+'</td><td>'+x.driver+'</td><td>'+fd(x.date)+'</td><td>'+x.from+'</td><td>'+x.to+'</td><td>'+x.cargo+'</td><td>'+money(x.fuel)+'</td><td>'+money(x.cost)+'</td></tr>').join(''):'<tr><td class="no-data" colspan="8">لا توجد بيانات</td></tr>');
+  }
+}
+function printRpt(){const t=document.getElementById('rTable');const ty=document.getElementById('rType');pw('<h2>شركة الهدي للحاصلات الزراعية</h2><h3>تقرير: '+ty.options[ty.selectedIndex].text+'</h3>'+document.getElementById('rSummary').innerHTML+'<br>'+t.outerHTML);}
+function exportRptCSV(){const t=document.getElementById('rTable');const rows=Array.from(t.querySelectorAll('tr')).map(r=>Array.from(r.querySelectorAll('th,td')).map(c=>'"'+c.textContent.trim().replace(/"/g,'""')+'"').join(',')).join('\n');const blob=new Blob(['\uFEFF'+rows],{type:'text/csv;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='تقرير_'+gv('rType')+'_'+today()+'.csv';a.click();}
+
+// ══════════ DASHBOARD ══════════
+function renderDashboard(){
+  const purs=R('purchases',[]);const sales=R('sales',[]);const t=R('treasury',[]);
+  const td=today();const farmers=R('farmers',[]);const facts=R('factories',[]);
+  const tIn=t.filter(x=>x.date.startsWith(td)&&x.type==='قبض').reduce((s,x)=>s+x.amount,0);
+  const totBal=t.reduce((s,x)=>s+(x.type==='قبض'?x.amount:-x.amount),0);
+  const totFarmerDebt=farmers.reduce((s,f)=>s+f.balance,0);
+  const totFactDebt=facts.reduce((s,f)=>s+f.balance,0);
+  document.getElementById('kpiGrid').innerHTML=kpiRow([
+    {l:'تحصيل اليوم',v:money(tIn),i:'💰',c:'var(--primary)'},
+    {l:'رصيد الخزينة',v:money(totBal),i:'🏦',c:'var(--accent)'},
+    {l:'مستحقات للمزارعين',v:money(totFarmerDebt),i:'👨‍🌾',c:'var(--danger)'},
+    {l:'ذمم المصانع',v:money(totFactDebt),i:'🏭',c:'var(--info)'},
+  ]);
+  // آخر توريدات
+  const recentSales=sales.slice().reverse().slice(0,5);
+  const dst=document.getElementById('dashSupply');
+  dst.innerHTML='<tr><th>#</th><th>المصنع</th><th>التاريخ</th><th>الوزن</th><th>الإجمالي</th><th>الدفع</th></tr>'+
+    (recentSales.length?recentSales.map(s=>'<tr><td>#'+s.id+'</td><td>'+s.factoryName+'</td><td>'+fd(s.date)+'</td><td>'+s.weight.toLocaleString('ar-EG')+' كجم</td><td>'+money(s.total)+'</td><td><span class="badge '+(s.method==='كاش'?'bs':'bw')+'">'+s.method+'</span></td></tr>').join(''):'<tr><td class="no-data" colspan="6">لا توجد توريدات</td></tr>');
+  // تنبيهات
+  const alerts=[];
+  const lowAgro=R('agroItems',[]).filter(i=>i.qty<i.reorder);const lowIrrig=R('irrigItems',[]).filter(i=>i.qty<i.reorder);
+  if(lowAgro.length)alerts.push('<div class="alert alert-w">⚠️ '+lowAgro.length+' أصناف مبيدات تحت الحد</div>');
+  if(lowIrrig.length)alerts.push('<div class="alert alert-w">⚠️ '+lowIrrig.length+' أصناف ري تحت الحد</div>');
+  const highDebt=farmers.filter(f=>f.balance>5000);if(highDebt.length)alerts.push('<div class="alert alert-d">💸 '+highDebt.length+' مزارعين برصيد مستحق أكثر من 5000 ج</div>');
+  const soonChk=R('cheques',[]).filter(c=>c.status==='معلق'&&c.due&&new Date(c.due)<=new Date(Date.now()+7*86400000));
+  if(soonChk.length)alerts.push('<div class="alert alert-w">📑 '+soonChk.length+' شيكات تستحق خلال 7 أيام</div>');
+  document.getElementById('dashAlerts').innerHTML=alerts.join('')||'<div class="ts tc">✅ لا توجد تنبيهات</div>';
+  // خزينة
+  document.getElementById('dashTreasury').innerHTML=
+    '<div class="fb"><span>رصيد الخزينة</span><b class="ts">'+money(totBal)+'</b></div>'+
+    '<div class="fb mt1"><span>تحصيل اليوم</span><b class="ts">'+money(tIn)+'</b></div>'+
+    '<div class="divider"></div>'+
+    '<div class="fb"><span>ذمم المصانع</span><b class="ts">'+money(totFactDebt)+'</b></div>'+
+    '<div class="fb mt1"><span>مستحقات المزارعين</span><b class="td">'+money(totFarmerDebt)+'</b></div>';
+  // ربحية المصانع
+  const ft=document.getElementById('dashFactoryProfit');const factProfit=facts.map(f=>{const fs=sales.filter(s=>s.factoryId===f.id);const rev=fs.reduce((s,x)=>s+x.total,0);return {name:f.name,rev};}).filter(f=>f.rev>0).sort((a,b)=>b.rev-a.rev);
+  ft.innerHTML='<tr><th>المصنع</th><th>إجمالي التوريد</th></tr>'+
+    (factProfit.length?factProfit.map(f=>'<tr><td>'+f.name+'</td><td class="ts">'+money(f.rev)+'</td></tr>').join(''):'<tr><td class="no-data" colspan="2">لا توجد بيانات</td></tr>');
+  // ربحية المزارع
+  const farms=R('farms',[]);const exps=R('farmExpenses',[]);const prods=R('farmProduction',[]);
+  const fmTable=document.getElementById('dashFarmProfit');
+  fmTable.innerHTML='<tr><th>المزرعة</th><th>صافي الربح</th></tr>'+
+    (farms.length?farms.map(f=>{const totE=exps.filter(e=>e.farmId===f.id).reduce((s,e)=>s+e.cost,0);const totR=prods.filter(p=>p.farmId===f.id).reduce((s,p)=>s+p.revenue,0);const profit=totR-totE;return '<tr><td>'+f.name+'</td><td class="'+(profit>=0?'ts':'td')+'"><b>'+money(profit)+'</b></td></tr>';}).join(''):'<tr><td class="no-data" colspan="2">لا توجد مزارع</td></tr>');
+  // مخزون منخفض
+  const low=[...R('agroItems',[]).filter(i=>i.qty<i.reorder).map(i=>i.name),...R('irrigItems',[]).filter(i=>i.qty<i.reorder).map(i=>i.name)];
+  document.getElementById('dashLowStock').innerHTML=low.length?low.map(n=>'<div class="chip" style="background:#FFEBEE;border-color:#FFCDD2;">⚠️ '+n+'</div>').join(''):'<div class="ts tc">✅ المخزون كافي</div>';
+}
+
+// ══════════ SETTINGS ══════════
+function loadSettings(){const s=R('settings',{name:'شركة الهدي',address:'',phone:'',season:'2024-2025',bernika:13});sv('setName',s.name);sv('setAddress',s.address||'');sv('setPhone',s.phone||'');sv('setSeason',s.season);sv('setBernika',s.bernika||13);}
+function saveSettings(){W('settings',{name:gv('setName'),address:gv('setAddress'),phone:gv('setPhone'),season:gv('setSeason'),bernika:+gv('setBernika')||13});alert('تم حفظ الإعدادات ✓');}
+function addSupplier(){const name=gv('supName').trim();if(!name)return;const id=nid('supplier',1);const s=R('suppliers',[]);s.push({id,name,phone:gv('supPhone'),type:gv('supType'),note:gv('supNote'),balance:0});W('suppliers',s);sv('supName','');sv('supPhone','');sv('supNote','');renderSuppliers();}
+function renderSuppliers(){const t=document.getElementById('suppliersTable');const s=R('suppliers',[]);if(!s.length){t.innerHTML='<tr><td class="no-data" colspan="4">لا يوجد موردون</td></tr>';return;}t.innerHTML='<tr><th>الاسم</th><th>النوع</th><th>الموبايل</th></tr>'+s.map(x=>'<tr><td><b>'+x.name+'</b></td><td>'+x.type+'</td><td>'+x.phone+'</td></tr>').join('');}
+function addClient(){const name=gv('cliName').trim();if(!name)return;const id=nid('client',1);const c=R('clients',[]);c.push({id,name,phone:gv('cliPhone'),type:gv('cliType'),note:gv('cliNote'),balance:0});W('clients',c);sv('cliName','');sv('cliPhone','');sv('cliType','');sv('cliNote','');renderClients();}
+function renderClients(){const t=document.getElementById('clientsTable');const c=R('clients',[]);if(!c.length){t.innerHTML='<tr><td class="no-data" colspan="4">لا يوجد عملاء</td></tr>';return;}t.innerHTML='<tr><th>الاسم</th><th>النشاط</th><th>الموبايل</th></tr>'+c.map(x=>'<tr><td><b>'+x.name+'</b></td><td>'+x.type+'</td><td>'+x.phone+'</td></tr>').join('');}
+
+// ══════════ DATA MANAGEMENT ══════════
+function exportData(){
+  const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','coa','treasury','settings','ids','seeded'];
+  const data={};keys.forEach(k=>{const v=R(k,null);if(v!=null)data[k]=v;});
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zad_backup_'+today()+'.json';a.click();
+}
+function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);Object.entries(data).forEach(([k,v])=>W(k,v));alert('تم الاستيراد ✓');location.reload();}catch(err){alert('خطأ: '+err.message);}};reader.readAsText(file);}
+function resetData(){const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','treasury','ids','seeded'];keys.forEach(k=>localStorage.removeItem(K+k));location.reload();}
+
+// ══════════ PRINT ══════════
+function pw(html){const w=window.open('','_blank','width=900,height=700');w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:20px;direction:rtl;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ccc;padding:7px;text-align:right;}th{background:#1B5E20;color:#fff;}h1,h2,h3{text-align:center;color:#1B5E20;}hr{margin:15px 0;}</style></head><body>'+html+'</body></html>');w.document.close();w.focus();w.print();}
+
+// ══════════ CLOCK & SEASON ══════════
+setInterval(()=>{const el=document.getElementById('hClock');if(el)el.textContent=new Date().toLocaleString('ar-EG');},1000);
+
+// ══════════ INIT ══════════
+document.addEventListener('DOMContentLoaded',()=>{
+  seed();
+  renderDashboard();
+  document.getElementById('hSeason').textContent=R('settings',{season:'2024-2025'}).season;
+  document.getElementById('rFrom').value=today().slice(0,7)+'-01';
+  document.getElementById('rTo').value=today();
+  document.getElementById('purDate').value=today();
+  document.getElementById('salDate').value=today();
+});
+</script>
+</body>
+</html>
