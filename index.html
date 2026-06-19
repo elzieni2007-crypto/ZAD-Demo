@@ -162,6 +162,12 @@ tr:hover td{background:#F9FBE7;}
     <button class="nbtn" onclick="P('cheques',this)">📑 الشيكات</button>
     <button class="nbtn" onclick="P('accounts',this)">📒 الحسابات</button>
     <button class="nbtn" onclick="P('reports',this)">📈 التقارير</button>
+    <button class="nbtn" onclick="P('workflow',this)">🔁 الدورة المستندية</button>
+    <button class="nbtn" onclick="P('costing',this)">🧮 التكاليف والهالك</button>
+    <button class="nbtn" onclick="P('ledgers',this)">📚 كشوف الحساب</button>
+    <button class="nbtn" onclick="P('einvoice',this)">🧾 الفاتورة الإلكترونية</button>
+    <button class="nbtn" onclick="P('audit',this)">🕵️ سجل المراجعة</button>
+    <button class="nbtn" onclick="P('permissions',this)">🔐 الصلاحيات</button>
     <button class="nbtn" onclick="P('settings',this)">⚙️ الإعدادات</button>
   </div>
 </nav>
@@ -327,6 +333,23 @@ tr:hover td{background:#F9FBE7;}
       <button class="btn btn-primary" onclick="addFarm()">✅ حفظ المزرعة</button>
     </div>
     <div class="card"><div class="card-title">🌱 المزارع المسجلة</div><div class="tbl-wrap"><table id="farmsTable"></table></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🌾 سجل العمليات الزراعية داخل المزارع</div>
+    <div class="fr4">
+      <div class="field"><label>المزرعة</label><select id="fopFarm"></select></div>
+      <div class="field"><label>نوع العملية</label><select id="fopType"><option>زراعة</option><option>ري</option><option>تسميد</option><option>رش مبيدات</option><option>حصاد</option><option>خدمة أرض</option><option>أخرى</option></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="fopDate"></div>
+      <div class="field"><label>التكلفة المرتبطة</label><input type="number" id="fopCost" min="0" value="0"></div>
+    </div>
+    <div class="fr3">
+      <div class="field"><label>المسؤول / المقاول</label><input id="fopOwner" placeholder="اسم المسؤول"></div>
+      <div class="field"><label>الكمية / الجرعة</label><input id="fopQty" placeholder="مثال: 20 لتر / 50 كجم"></div>
+      <div class="field"><label>ملاحظات</label><input id="fopNote"></div>
+    </div>
+    <button class="btn btn-primary" onclick="addFarmOperation()">➕ تسجيل العملية الزراعية</button>
+    <div class="tbl-wrap mt1"><table id="farmOpsTable"></table></div>
   </div>
   <!-- مصروفات المزرعة -->
   <div class="card">
@@ -821,6 +844,118 @@ tr:hover td{background:#F9FBE7;}
   </div>
 </div>
 
+
+<!-- ══════════════════════════════════════
+     WORKFLOW / COSTING / LEDGERS / COMPLIANCE
+══════════════════════════════════════ -->
+<div id="workflow" class="page">
+  <div class="g4 mb1" id="wfKpi"></div>
+  <div class="card">
+    <div class="card-title">🔁 إنشاء مستند دورة عمل</div>
+    <div class="alert alert-i">الدورة المقترحة: طلب شراء → استلام فراولة → تجهيز → إذن توريد → فاتورة بيع → تحصيل. كل مستند له حالة واعتماد.</div>
+    <div class="fr4">
+      <div class="field"><label>نوع المستند</label><select id="wfType"><option>طلب شراء</option><option>استلام فراولة</option><option>أمر تجهيز</option><option>إذن توريد</option><option>فاتورة بيع</option><option>تحصيل</option></select></div>
+      <div class="field"><label>التاريخ</label><input type="date" id="wfDate"></div>
+      <div class="field"><label>الطرف</label><input id="wfParty" placeholder="مزارع / مصنع / محطة تجهيز"></div>
+      <div class="field"><label>رقم مرجعي</label><input id="wfRef" placeholder="اختياري"></div>
+    </div>
+    <div class="fr4">
+      <div class="field"><label>الكمية / الوزن</label><input id="wfQty" placeholder="مثال: 150 برنيكة / 1950 كجم"></div>
+      <div class="field"><label>القيمة التقديرية</label><input type="number" id="wfAmount" min="0" value="0"></div>
+      <div class="field"><label>مركز التكلفة</label><select id="wfCostCenter"><option>توريد الفراولة</option><option>مزارع الشركة</option><option>النقل</option><option>مبيدات وأسمدة</option><option>ري حديث</option></select></div>
+      <div class="field"><label>الحالة</label><select id="wfStatus"><option>Draft</option><option>Approved</option><option>Closed</option></select></div>
+    </div>
+    <div class="field"><label>ملاحظات</label><input id="wfNote"></div>
+    <button class="btn btn-primary" onclick="addWorkflowDoc()">💾 حفظ المستند</button>
+  </div>
+  <div class="card"><div class="card-title">📋 سجل الدورة المستندية</div><div class="tbl-wrap"><table id="wfTable"></table></div></div>
+</div>
+
+<div id="costing" class="page">
+  <div class="card">
+    <div class="card-title">🧮 محرك تكلفة الفراولة والهالك</div>
+    <div class="alert alert-w">يحسب تكلفة الكيلو الفعلية بناءً على الشراء + التجهيز + النقل + المصروفات + الهالك بين الوزن المستلم والوزن المباع.</div>
+    <div class="fr3">
+      <div class="field"><label>من تاريخ</label><input type="date" id="costFrom"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="costTo"></div>
+      <div class="field"><label>المصنع</label><select id="costFactory"><option value="">كل المصانع</option></select></div>
+    </div>
+    <button class="btn btn-primary" onclick="renderCosting()">📊 احتساب التكلفة</button>
+  </div>
+  <div class="g5 mb1" id="costKpi"></div>
+  <div class="card"><div class="card-title">📋 تكلفة وربحية كل توريدة</div><div class="tbl-wrap"><table id="costTable"></table></div></div>
+</div>
+
+<div id="ledgers" class="page">
+  <div class="card">
+    <div class="card-title">📚 كشف حساب تفصيلي</div>
+    <div class="fr4">
+      <div class="field"><label>نوع الكشف</label><select id="ledType" onchange="fillLedgerParties()"><option value="farmer">مزارع</option><option value="factory">مصنع</option><option value="contractor">مقاول / عامل</option></select></div>
+      <div class="field"><label>الطرف</label><select id="ledParty"></select></div>
+      <div class="field"><label>من تاريخ</label><input type="date" id="ledFrom"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="ledTo"></div>
+    </div>
+    <button class="btn btn-primary" onclick="renderLedger()">🔍 عرض الكشف</button>
+  </div>
+  <div class="g4 mb1" id="ledgerKpi"></div>
+  <div class="card"><div class="card-title">📜 الحركات</div><div class="tbl-wrap"><table id="ledgerTable"></table></div></div>
+</div>
+
+<div id="einvoice" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🧾 إعداد الفاتورة الإلكترونية المصرية</div>
+      <div class="field"><label>رقم التسجيل الضريبي</label><input id="taxReg" placeholder="مثال: 123456789"></div>
+      <div class="field"><label>نسبة ضريبة القيمة المضافة</label><input type="number" id="vatRate" value="14"></div>
+      <div class="field"><label>Environment</label><select id="etaEnv"><option>Pre-Production</option><option>Production</option></select></div>
+      <button class="btn btn-primary" onclick="saveTaxSettings()">💾 حفظ إعدادات الضريبة</button>
+    </div>
+    <div class="card">
+      <div class="card-title">📡 حالة الربط</div>
+      <div class="alert alert-i">هذه شاشة Demo لتوضيح الربط. التنفيذ الفعلي يحتاج API Credentials من مصلحة الضرائب وختم إلكتروني.</div>
+      <div id="etaStatus"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">📤 إرسال فاتورة من توريدات المصانع</div>
+    <div class="fr3">
+      <div class="field"><label>اختر توريدة</label><select id="einvSale"></select></div>
+      <div class="field"><label>كود النشاط</label><input id="einvActivity" value="A0121"></div>
+      <div class="field"><label>كود الصنف/الخدمة</label><input id="einvItemCode" value="EG-STRW-001"></div>
+    </div>
+    <button class="btn btn-success" onclick="createEInvoice()">🧾 إنشاء فاتورة إلكترونية Demo</button>
+  </div>
+  <div class="card"><div class="card-title">📋 سجل الفواتير الإلكترونية</div><div class="tbl-wrap"><table id="einvTable"></table></div></div>
+</div>
+
+<div id="audit" class="page">
+  <div class="card">
+    <div class="card-title">🕵️ Audit Log - سجل جميع العمليات</div>
+    <div class="fr3">
+      <div class="field"><label>بحث</label><input id="auditSearch" oninput="renderAudit()" placeholder="اسم شاشة / عملية / مستخدم"></div>
+      <div class="field"><label>من تاريخ</label><input type="date" id="auditFrom" onchange="renderAudit()"></div>
+      <div class="field"><label>إلى تاريخ</label><input type="date" id="auditTo" onchange="renderAudit()"></div>
+    </div>
+  </div>
+  <div class="card"><div class="tbl-wrap"><table id="auditTable"></table></div></div>
+</div>
+
+<div id="permissions" class="page">
+  <div class="g2">
+    <div class="card">
+      <div class="card-title">🔐 إضافة مستخدم وصلاحية</div>
+      <div class="fr3">
+        <div class="field"><label>اسم المستخدم</label><input id="usrName" placeholder="مثال: Accountant"></div>
+        <div class="field"><label>الدور</label><select id="usrRole"><option>Admin</option><option>Finance</option><option>Store Keeper</option><option>Farm Manager</option><option>Operation</option><option>Viewer</option></select></div>
+        <div class="field"><label>الحالة</label><select id="usrStatus"><option>Active</option><option>Inactive</option></select></div>
+      </div>
+      <button class="btn btn-primary" onclick="addUserRole()">➕ إضافة مستخدم</button>
+    </div>
+    <div class="card"><div class="card-title">👥 المستخدمون</div><div class="tbl-wrap"><table id="usersTable"></table></div></div>
+  </div>
+  <div class="card"><div class="card-title">🧩 مصفوفة الصلاحيات المقترحة</div><div class="tbl-wrap"><table id="permTable"></table></div></div>
+</div>
+
 <!-- ══════════════════════════════════════
      SETTINGS
 ══════════════════════════════════════ -->
@@ -1002,6 +1137,12 @@ function P(id,btn){
     cheques:renderCheques,
     accounts:()=>{initJForm();renderJournal();renderCOA();},
     reports:()=>{initRptDates();rTypeChanged();},
+    workflow:()=>{renderWorkflow();},
+    costing:()=>{initCosting();renderCosting();},
+    ledgers:()=>{fillLedgerParties();renderLedger();},
+    einvoice:()=>{loadTaxSettings();fillEInvoiceSales();renderEInvoices();},
+    audit:()=>{renderAudit();},
+    permissions:()=>{renderUsers();renderPermissions();},
     settings:()=>{loadSettings();renderSuppliers();renderClients();},
   };
   if(r[id])r[id]();
@@ -1225,7 +1366,8 @@ function renderFarms(){
 function fillFarmSelects(){
   const farms=R('farms',[]);
   const opts=farms.map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('');
-  ['fexpFarm','fprodFarm'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  ['fopFarm','fexpFarm','fprodFarm'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts;});
+  renderFarmOperations();
 }
 function addFarmExpense(){
   const fid=+gv('fexpFarm');if(!fid)return alert('اختر المزرعة');
@@ -1850,14 +1992,232 @@ function renderSuppliers(){const t=document.getElementById('suppliersTable');con
 function addClient(){const name=gv('cliName').trim();if(!name)return;const id=nid('client',1);const c=R('clients',[]);c.push({id,name,phone:gv('cliPhone'),type:gv('cliType'),note:gv('cliNote'),balance:0});W('clients',c);sv('cliName','');sv('cliPhone','');sv('cliType','');sv('cliNote','');renderClients();}
 function renderClients(){const t=document.getElementById('clientsTable');const c=R('clients',[]);if(!c.length){t.innerHTML='<tr><td class="no-data" colspan="4">لا يوجد عملاء</td></tr>';return;}t.innerHTML='<tr><th>الاسم</th><th>النشاط</th><th>الموبايل</th></tr>'+c.map(x=>'<tr><td><b>'+x.name+'</b></td><td>'+x.type+'</td><td>'+x.phone+'</td></tr>').join('');}
 
+// ══════════ WORKFLOW / COSTING / LEDGERS / COMPLIANCE ADDITIONS ══════════
+function logAudit(action,module,desc){
+  try{
+    const a=R('auditLog',[]);
+    a.push({id:Date.now(),date:now(),user:R('currentUser','Admin'),action,module,desc});
+    if(a.length>500)a.splice(0,a.length-500);
+    localStorage.setItem(K+'auditLog',JSON.stringify(a));
+  }catch(e){}
+}
+function addWorkflowDoc(){
+  const docs=R('workflowDocs',[]);const id=nid('workflow',1);
+  const doc={id,type:gv('wfType'),date:gv('wfDate')||today(),party:gv('wfParty'),ref:gv('wfRef'),qty:gv('wfQty'),amount:+gv('wfAmount')||0,costCenter:gv('wfCostCenter'),status:gv('wfStatus'),note:gv('wfNote')};
+  docs.push(doc);W('workflowDocs',docs);logAudit('Create','Workflow','إنشاء '+doc.type+' #'+id);
+  ['wfParty','wfRef','wfQty','wfAmount','wfNote'].forEach(i=>sv(i,i==='wfAmount'?'0':''));renderWorkflow();alert('تم حفظ المستند #'+id);
+}
+function updateWorkflowStatus(id,status){const docs=R('workflowDocs',[]);const d=docs.find(x=>x.id===id);if(d){d.status=status;W('workflowDocs',docs);logAudit('Update','Workflow','تغيير حالة مستند #'+id+' إلى '+status);renderWorkflow();}}
+function renderWorkflow(){
+  const docs=R('workflowDocs',[]);const todayDocs=docs.filter(d=>String(d.date).slice(0,10)===today()).length;
+  const approved=docs.filter(d=>d.status==='Approved').length, closed=docs.filter(d=>d.status==='Closed').length;
+  const draft=docs.filter(d=>d.status==='Draft').length;
+  const el=document.getElementById('wfKpi');if(el)el.innerHTML=kpiRow([
+    {l:'مستندات اليوم',v:todayDocs,i:'📄',c:'var(--info)'},{l:'Draft',v:draft,i:'✏️',c:'var(--warning)'},{l:'Approved',v:approved,i:'✅',c:'var(--success)'},{l:'Closed',v:closed,i:'🔒',c:'var(--primary)'}]);
+  const t=document.getElementById('wfTable');if(!t)return;
+  t.innerHTML='<tr><th>#</th><th>النوع</th><th>التاريخ</th><th>الطرف</th><th>الكمية</th><th>القيمة</th><th>مركز تكلفة</th><th>الحالة</th><th>إجراء</th></tr>'+
+    (docs.length?docs.slice().reverse().map(d=>'<tr><td>#'+d.id+'</td><td><b>'+d.type+'</b></td><td>'+fd(d.date)+'</td><td>'+d.party+'</td><td>'+d.qty+'</td><td>'+money(d.amount)+'</td><td><span class="chip">'+d.costCenter+'</span></td><td><span class="badge '+(d.status==='Closed'?'bs':d.status==='Approved'?'bi':'bw')+'">'+d.status+'</span></td><td><button class="btn btn-success btn-sm" onclick="updateWorkflowStatus('+d.id+',\'Approved\')">اعتماد</button> <button class="btn btn-secondary btn-sm" onclick="updateWorkflowStatus('+d.id+',\'Closed\')">إغلاق</button></td></tr>').join(''):'<tr><td class="no-data" colspan="9">لا توجد مستندات</td></tr>');
+}
+function initCosting(){
+  const opts='<option value="">كل المصانع</option>'+R('factories',[]).map(f=>'<option value="'+f.id+'">'+f.name+'</option>').join('');
+  const el=document.getElementById('costFactory');if(el)el.innerHTML=opts;
+  if(!gv('costFrom'))sv('costFrom',today().slice(0,7)+'-01'); if(!gv('costTo'))sv('costTo',today());
+}
+function calcSaleCostRow(s){
+  const pur=R('purchases',[]).find(p=>p.id===s.purchaseId)||{};
+  const procs=R('processing',[]).filter(p=>p.purchaseId===s.purchaseId);
+  const purchaseCost=+pur.total||0, procCost=procs.reduce((a,p)=>a+(+p.totalCost||0),0);
+  const transport=(+s.transport||0)+(+s.extra||0);
+  const totalCost=purchaseCost+procCost+transport;
+  const recW=+pur.weight||0, outW=+s.weight||0, waste=Math.max(0,recW-outW), wastePct=recW?((waste/recW)*100):0;
+  const unitCost=outW?totalCost/outW:0, profit=(+s.total||0)-totalCost, margin=s.total?profit/s.total*100:0;
+  return {s,pur,purchaseCost,procCost,transport,totalCost,recW,outW,waste,wastePct,unitCost,profit,margin};
+}
+function renderCosting(){
+  const from=gv('costFrom'),to=gv('costTo'),fid=gv('costFactory');
+  let rows=R('sales',[]).filter(s=>(!from||s.date>=from)&&(!to||s.date<=to+'T23:59:59'));
+  if(fid)rows=rows.filter(s=>String(s.factoryId)===fid);
+  const calc=rows.map(calcSaleCostRow);const rev=calc.reduce((a,r)=>a+(+r.s.total||0),0), cost=calc.reduce((a,r)=>a+r.totalCost,0), waste=calc.reduce((a,r)=>a+r.waste,0), out=calc.reduce((a,r)=>a+r.outW,0), profit=rev-cost;
+  const k=document.getElementById('costKpi');if(k)k.innerHTML=kpiRow([{l:'إجمالي الإيراد',v:money(rev),i:'💰',c:'var(--success)'},{l:'إجمالي التكلفة',v:money(cost),i:'💸',c:'var(--danger)'},{l:'صافي الربح',v:money(profit),i:'📈',c:profit>=0?'var(--success)':'var(--danger)'},{l:'الهالك كجم',v:waste.toLocaleString('ar-EG'),i:'🧺',c:'var(--warning)'},{l:'متوسط تكلفة الكجم',v:money(out?cost/out:0),i:'⚖️',c:'var(--info)'}]);
+  const t=document.getElementById('costTable');if(!t)return;
+  t.innerHTML='<tr><th>توريدة</th><th>مصنع</th><th>وزن مستلم</th><th>وزن مباع</th><th>هالك</th><th>% هالك</th><th>شراء</th><th>تجهيز</th><th>نقل/إضافي</th><th>تكلفة الكجم</th><th>الإيراد</th><th>الربح</th></tr>'+
+  (calc.length?calc.map(r=>'<tr><td>#'+r.s.id+'</td><td>'+r.s.factoryName+'</td><td>'+r.recW.toLocaleString('ar-EG')+'</td><td>'+r.outW.toLocaleString('ar-EG')+'</td><td>'+r.waste.toLocaleString('ar-EG')+'</td><td><span class="badge '+(r.wastePct>12?'bd':r.wastePct>7?'bw':'bs')+'">'+r.wastePct.toFixed(1)+'%</span></td><td>'+money(r.purchaseCost)+'</td><td>'+money(r.procCost)+'</td><td>'+money(r.transport)+'</td><td><b>'+money(r.unitCost)+'</b></td><td>'+money(r.s.total)+'</td><td class="'+(r.profit>=0?'ts':'td')+'"><b>'+money(r.profit)+'</b></td></tr>').join(''):'<tr><td class="no-data" colspan="12">لا توجد توريدات مرتبطة</td></tr>');
+}
+function fillLedgerParties(){
+  const type=gv('ledType');let data=[];
+  if(type==='farmer')data=R('farmers',[]); else if(type==='factory')data=R('factories',[]); else data=R('workers',[]).filter(w=>w.type==='مقاول'||w.type==='عامل يومي'||w.type==='سائق'||w.type==='موظف');
+  const el=document.getElementById('ledParty');if(el)el.innerHTML=data.map(x=>'<option value="'+x.id+'">'+x.name+'</option>').join('');
+}
+function renderLedger(){
+  const type=gv('ledType'),id=+gv('ledParty'),from=gv('ledFrom'),to=gv('ledTo');let rows=[];
+  const inR=d=>(!from||String(d).slice(0,10)>=from)&&(!to||String(d).slice(0,10)<=to);
+  if(type==='farmer'){
+    R('purchases',[]).filter(p=>p.farmerId===id&&inR(p.date)).forEach(p=>rows.push({date:p.date,desc:'شراء فراولة #'+p.id,debit:0,credit:p.total}));
+    R('farmerPayments',[]).filter(p=>p.farmerId===id&&inR(p.date)).forEach(p=>rows.push({date:p.date,desc:'سداد للمزارع',debit:p.amount,credit:0}));
+  }else if(type==='factory'){
+    R('sales',[]).filter(s=>s.factoryId===id&&inR(s.date)).forEach(s=>rows.push({date:s.date,desc:'توريد/فاتورة #'+s.id,debit:s.total,credit:0}));
+    R('factoryCollections',[]).filter(c=>c.factoryId===id&&inR(c.date)).forEach(c=>rows.push({date:c.date,desc:'تحصيل من مصنع',debit:0,credit:c.amount}));
+  }else{
+    R('wages',[]).filter(w=>w.workerId===id&&inR(w.date)).forEach(w=>rows.push({date:w.date,desc:'صرف أجر/مقاول',debit:w.amount,credit:0}));
+  }
+  rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));let bal=0;rows=rows.map(r=>{bal+=r.debit-r.credit;return {...r,balance:bal};});
+  const dr=rows.reduce((a,r)=>a+r.debit,0),cr=rows.reduce((a,r)=>a+r.credit,0);
+  const k=document.getElementById('ledgerKpi');if(k)k.innerHTML=kpiRow([{l:'مدين',v:money(dr),i:'➕',c:'var(--danger)'},{l:'دائن',v:money(cr),i:'➖',c:'var(--success)'},{l:'الرصيد',v:money(dr-cr),i:'⚖️',c:(dr-cr)>=0?'var(--warning)':'var(--info)'},{l:'عدد الحركات',v:rows.length,i:'📜',c:'var(--primary)'}]);
+  const t=document.getElementById('ledgerTable');if(t)t.innerHTML='<tr><th>التاريخ</th><th>البيان</th><th>مدين</th><th>دائن</th><th>الرصيد</th></tr>'+
+   (rows.length?rows.map(r=>'<tr><td>'+fd(r.date)+'</td><td>'+r.desc+'</td><td>'+money(r.debit)+'</td><td>'+money(r.credit)+'</td><td><b>'+money(r.balance)+'</b></td></tr>').join(''):'<tr><td class="no-data" colspan="5">لا توجد حركات</td></tr>');
+}
+function loadTaxSettings(){const s=R('taxSettings',{taxReg:'',vatRate:14,etaEnv:'Pre-Production'});sv('taxReg',s.taxReg);sv('vatRate',s.vatRate);sv('etaEnv',s.etaEnv);const st=document.getElementById('etaStatus');if(st)st.innerHTML='<div class="fb"><span>البيئة</span><b>'+s.etaEnv+'</b></div><div class="fb mt1"><span>VAT</span><b>'+s.vatRate+'%</b></div><div class="fb mt1"><span>الحالة</span><span class="badge bw">Demo غير متصل فعليًا</span></div>';}
+function saveTaxSettings(){W('taxSettings',{taxReg:gv('taxReg'),vatRate:+gv('vatRate')||14,etaEnv:gv('etaEnv')});logAudit('Update','E-Invoice','حفظ إعدادات الفاتورة الإلكترونية');loadTaxSettings();alert('تم حفظ إعدادات الضريبة');}
+function fillEInvoiceSales(){const el=document.getElementById('einvSale');if(el)el.innerHTML=R('sales',[]).map(s=>'<option value="'+s.id+'">#'+s.id+' - '+s.factoryName+' - '+money(s.total)+'</option>').join('');}
+function createEInvoice(){const sid=+gv('einvSale');const s=R('sales',[]).find(x=>x.id===sid);if(!s)return alert('اختر توريدة');const tax=R('taxSettings',{vatRate:14});const invs=R('einvoices',[]);const vat=s.total*(+tax.vatRate||14)/100;const id='ETA-'+Date.now();invs.push({id,date:now(),saleId:s.id,factory:s.factoryName,net:s.total,vat,total:s.total+vat,status:'Created Demo',uuid:'DEMO-'+Math.random().toString(36).slice(2,10).toUpperCase()});W('einvoices',invs);logAudit('Create','E-Invoice','إنشاء فاتورة إلكترونية Demo للتوريدة #'+s.id);renderEInvoices();alert('تم إنشاء فاتورة Demo');}
+function renderEInvoices(){fillEInvoiceSales();const t=document.getElementById('einvTable');const invs=R('einvoices',[]);if(!t)return;t.innerHTML='<tr><th>رقم</th><th>التاريخ</th><th>المصنع</th><th>صافي</th><th>VAT</th><th>الإجمالي</th><th>UUID</th><th>الحالة</th></tr>'+ (invs.length?invs.slice().reverse().map(i=>'<tr><td>'+i.id+'</td><td>'+fdt(i.date)+'</td><td>'+i.factory+'</td><td>'+money(i.net)+'</td><td>'+money(i.vat)+'</td><td><b>'+money(i.total)+'</b></td><td>'+i.uuid+'</td><td><span class="badge bi">'+i.status+'</span></td></tr>').join(''):'<tr><td class="no-data" colspan="8">لا توجد فواتير إلكترونية</td></tr>');}
+function renderAudit(){const q=(gv('auditSearch')||'').toLowerCase(),from=gv('auditFrom'),to=gv('auditTo');let a=R('auditLog',[]);a=a.filter(x=>(!q||JSON.stringify(x).toLowerCase().includes(q))&&(!from||x.date>=from)&&(!to||x.date<=to+'T23:59:59')).slice().reverse();const t=document.getElementById('auditTable');if(t)t.innerHTML='<tr><th>الوقت</th><th>المستخدم</th><th>الشاشة</th><th>الإجراء</th><th>التفاصيل</th></tr>'+ (a.length?a.map(x=>'<tr><td>'+fdt(x.date)+'</td><td>'+x.user+'</td><td>'+x.module+'</td><td><span class="badge bm">'+x.action+'</span></td><td>'+x.desc+'</td></tr>').join(''):'<tr><td class="no-data" colspan="5">لا يوجد سجل مراجعة بعد</td></tr>');}
+function addUserRole(){const name=gv('usrName').trim();if(!name)return alert('أدخل اسم المستخدم');const users=R('users',[]);users.push({id:Date.now(),name,role:gv('usrRole'),status:gv('usrStatus')});W('users',users);logAudit('Create','Permissions','إضافة مستخدم '+name);sv('usrName','');renderUsers();}
+function renderUsers(){const t=document.getElementById('usersTable');const users=R('users',[{id:1,name:'Admin',role:'Admin',status:'Active'},{id:2,name:'Accountant',role:'Finance',status:'Active'},{id:3,name:'Operation User',role:'Operation',status:'Active'}]);if(!R('users',null))W('users',users);if(t)t.innerHTML='<tr><th>المستخدم</th><th>الدور</th><th>الحالة</th></tr>'+users.map(u=>'<tr><td><b>'+u.name+'</b></td><td>'+u.role+'</td><td><span class="badge '+(u.status==='Active'?'bs':'bd')+'">'+u.status+'</span></td></tr>').join('');}
+function renderPermissions(){const roles=['Admin','Finance','Store Keeper','Farm Manager','Operation','Viewer'];const screens=['الحسابات','الخزينة','التوريد','المخزون','المزارع','التقارير','الإعدادات'];const allow={Admin:7,Finance:5,'Store Keeper':3,'Farm Manager':4,Operation:4,Viewer:1};const t=document.getElementById('permTable');if(t)t.innerHTML='<tr><th>الصلاحية</th>'+roles.map(r=>'<th>'+r+'</th>').join('')+'</tr>'+screens.map((s,i)=>'<tr><td><b>'+s+'</b></td>'+roles.map(r=>'<td class="tc">'+(i<allow[r]?'✅':'—')+'</td>').join('')+'</tr>').join('');}
+function addFarmOperation(){const fid=+gv('fopFarm');if(!fid)return alert('اختر المزرعة');const farm=R('farms',[]).find(f=>f.id===fid);const ops=R('farmOperations',[]);const id=nid('farmOp',1);const cost=+gv('fopCost')||0;ops.push({id,farmId:fid,farmName:farm?.name||'',type:gv('fopType'),date:gv('fopDate')||today(),cost,owner:gv('fopOwner'),qty:gv('fopQty'),note:gv('fopNote')});W('farmOperations',ops);logAudit('Create','Farm Operations','عملية '+gv('fopType')+' للمزرعة '+(farm?.name||''));if(cost>0){const exps=R('farmExpenses',[]);exps.push({id:nid('farmExp',1),farmId:fid,farmName:farm?.name||'',type:gv('fopType'),qty:gv('fopQty'),cost,date:gv('fopDate')||today(),supplier:gv('fopOwner'),note:gv('fopNote')});W('farmExpenses',exps);}['fopCost','fopOwner','fopQty','fopNote'].forEach(i=>sv(i,i==='fopCost'?'0':''));renderFarmOperations();renderFarmExpenses();updateFarmsSummary();}
+function renderFarmOperations(){const t=document.getElementById('farmOpsTable');if(!t)return;const ops=R('farmOperations',[]);t.innerHTML='<tr><th>#</th><th>المزرعة</th><th>العملية</th><th>التاريخ</th><th>المسؤول</th><th>الكمية</th><th>التكلفة</th><th>ملاحظات</th></tr>'+ (ops.length?ops.slice().reverse().map(o=>'<tr><td>#'+o.id+'</td><td>'+o.farmName+'</td><td><span class="badge bs">'+o.type+'</span></td><td>'+fd(o.date)+'</td><td>'+o.owner+'</td><td>'+o.qty+'</td><td>'+money(o.cost)+'</td><td>'+o.note+'</td></tr>').join(''):'<tr><td class="no-data" colspan="8">لا توجد عمليات زراعية</td></tr>');}
+
+
+
+// ══════════ 300+ DEMO RECORDS FOR PRESENTATION ══════════
+function seedDemo300(){
+  if(R('demoSeedVersion',0)>=300)return;
+  const d=(i)=>{const dt=new Date();dt.setDate(dt.getDate()-i);return dt.toISOString().slice(0,10);};
+  const pick=(arr,i)=>arr[i%arr.length];
+  const farmers=R('farmers',[]), factories=R('factories',[]), farms=R('farms',[]), workers=R('workers',[]), vehicles=R('vehicles',[]), suppliers=R('suppliers',[]), clients=R('clients',[]);
+  if(!farmers.length||!factories.length)return;
+
+  // clear previous demo transactions to avoid duplicates after publishing updates
+  ['purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','workflowDocs','farmOperations','einvoices','treasury','journal','auditLog'].forEach(k=>W(k,[]));
+
+  const treasury=[]; const journal=[]; const audit=[];
+  function tj(type,account,amount,method,desc,date){treasury.push({id:'T-DEMO-'+(treasury.length+1),date:date+'T09:00:00',type,account,amount:+amount,method,desc});}
+  function je(desc,lines,date){journal.push({id:journal.length+1,date:date+'T10:00:00',desc,lines,auto:true});}
+  function al(action,module,desc,date){audit.push({id:Date.now()+audit.length,date:date+'T11:00:00',user:pick(['Admin','Accountant','Operation User','Farm Manager'],audit.length),action,module,desc});}
+
+  const purchases=[];
+  for(let i=1;i<=60;i++){
+    const f=pick(farmers,i), date=d(i%45), units=80+(i%35)*6, weight=units*(12.6+(i%5)*.15), price=22+(i%9), total=+(weight*price).toFixed(2);
+    const paid=Math.round(total*(i%3===0?.35:i%3===1?.65:1));
+    purchases.push({id:1000+i,farmerId:f.id,farmerName:f.name,date,season:'2024-2025',units,weight:+weight.toFixed(2),price,total,paid,remaining:+(total-paid).toFixed(2),method:paid>=total?'كاش':paid>0?'جزئي':'آجل',note:'بيانات ديمو موسم الفراولة',status:paid>=total?'مسدد':'معلق'});
+    if(paid>0)tj('صرف','الخزينة الرئيسية',paid,'كاش','شراء فراولة من '+f.name+' #'+(1000+i),date);
+    je('شراء فراولة #'+(1000+i),[{acc:'مخزون فراولة',dr:total,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:paid},{acc:'ذمم دائنة - مزارعون',dr:0,cr:Math.max(0,total-paid)}],date);
+    al('Create','Purchase','تسجيل شراء فراولة #'+(1000+i),date);
+  }
+  W('purchases',purchases);
+
+  const processing=[];
+  for(let i=1;i<=50;i++){
+    const pur=purchases[i-1], date=d((i%40)+1), units=Math.round(pur.units*(.88+(i%4)*.02)), costUnit=3+(i%4), costTotal=units*costUnit, laborCost=650+(i%8)*120, other=150+(i%5)*70, totalCost=costTotal+laborCost+other;
+    processing.push({id:i,purchaseId:pur.id,station:pick(['مفرش الهدي','محطة الدلتا','مفرش النيل','محطة السلام'],i),date,units,costUnit,costTotal,laborCost,other,totalCost,note:'تجهيز وإزالة القمع'});
+    tj('صرف','الخزينة الرئيسية',totalCost,'كاش','تكلفة تجهيز #'+i,date);
+    je('تجهيز فراولة #'+i,[{acc:'تكلفة التجهيز',dr:totalCost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:totalCost}],date);
+    al('Create','Processing','تسجيل عملية تجهيز #'+i,date);
+  }
+  W('processing',processing);
+
+  const sales=[];
+  for(let i=1;i<=55;i++){
+    const pur=purchases[i-1], fac=pick(factories,i), date=d((i%35)+1), weight=+(pur.weight*(.84+(i%5)*.025)).toFixed(2), price=32+(i%11), total=+(weight*price).toFixed(2);
+    const method=i%4===0?'آجل':'كاش';
+    const transport=900+(i%6)*180, extra=120+(i%5)*55;
+    sales.push({id:2000+i,factoryId:fac.id,factoryName:fac.name,date,purchaseId:pur.id,bascule:'BS-'+(5000+i),weight,price,total,transport,extra,method,note:'توريد ديمو للمصنع',status:method==='كاش'?'مسدد':'معلق'});
+    if(method==='كاش')tj('قبض','الخزينة الرئيسية',total,'كاش','توريد فراولة إلى '+fac.name+' #'+(2000+i),date);
+    je('توريد فراولة #'+(2000+i),[{acc:method==='كاش'?'الخزينة الرئيسية':'ذمم مدينة - مصانع',dr:total,cr:0},{acc:'إيرادات توريد الفراولة',dr:0,cr:total}],date);
+    al('Create','Sales','تسجيل توريد مصنع #'+(2000+i),date);
+  }
+  W('sales',sales);
+
+  const farmOps=[], farmExpenses=[], farmProduction=[];
+  const opTypes=['رش','تسميد','ري','زراعة','حصاد','مكافحة'];
+  for(let i=1;i<=45;i++){
+    const farm=pick(farms,i), date=d((i%50)+1), type=pick(opTypes,i), cost=type==='ري'?350+(i%6)*80:type==='حصاد'?1200+(i%8)*150:700+(i%7)*110;
+    farmOps.push({id:i,farmId:farm.id,farmName:farm.name,type,date,cost,owner:pick(['مقاول رش','مشرف المزرعة','مقاول حصاد','عامل ري'],i),qty:(20+i)+' وحدة',note:'عملية زراعية تجريبية'});
+    farmExpenses.push({id:i,farmId:farm.id,farmName:farm.name,type,qty:(20+i)+' وحدة',cost,date,supplier:pick(suppliers,i)?.name||'مورد عام',note:'مصروف مزرعة مرتبط بالعملية'});
+    if(i<=25){const qty=850+(i%9)*160, price=30+(i%8); farmProduction.push({id:i,farmId:farm.id,farmName:farm.name,date,qty,price,total:qty*price,note:'إنتاج تجريبي'});}
+    je('مصروف مزرعة '+farm.name,[{acc:'مصروفات المزارع',dr:cost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:cost}],date);
+    al('Create','Farm Operations','عملية '+type+' - '+farm.name,date);
+  }
+  W('farmOperations',farmOps);W('farmExpenses',farmExpenses);W('farmProduction',farmProduction);
+
+  const trips=[], maint=[];
+  for(let i=1;i<=35;i++){
+    const v=pick(vehicles,i), date=d((i%38)+1), cost=1200+(i%7)*250, fuel=400+(i%5)*90;
+    trips.push({id:i,vehicleId:v.id,vehiclePlate:v.plate,date,from:pick(['كفر الشيخ','دمياط','المنوفية','بنها'],i),to:pick(['العاشر من رمضان','الإسماعيلية','القاهرة','العبور'],i),cargo:pick(['فراولة','أسمدة','مستلزمات ري'],i),weight:1200+(i%10)*250,fuel,cost,refType:i%2?'sale':'purchase',refId:i%2?sales[i%sales.length].id:purchases[i%purchases.length].id,note:'نقلة ديمو'});
+    tj('صرف','الخزينة الرئيسية',cost,'كاش','تكلفة نقلة سيارة '+v.plate,date);
+    je('تكلفة نقل #'+i,[{acc:'تكلفة النقل',dr:cost,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:cost}],date);
+    if(i<=18){maint.push({id:i,vehicleId:v.id,vehiclePlate:v.plate,date,type:pick(['وقود','صيانة دورية','إصلاح','إطارات'],i),cost:500+(i%6)*160,note:'مصروف سيارة تجريبي'});}
+    al('Create','Transport','تسجيل نقلة #'+i,date);
+  }
+  W('trips',trips);W('maintenances',maint);
+
+  const wages=[];
+  for(let i=1;i<=35;i++){
+    const w=pick(workers,i), date=d((i%30)+1), amount=w.salaryUnit==='شهري'?(w.salary||3500):(250+(i%5)*80);
+    wages.push({id:i,workerId:w.id,workerName:w.name,amount,method:i%3?'كاش':'تحويل',date,ref:pick(['purchase','farm','processing','transport','عام'],i),note:'صرف أجر ديمو'});
+    tj('صرف','الخزينة الرئيسية',amount,wages[wages.length-1].method,'أجر '+w.name,date);
+    je('أجر '+w.name,[{acc:'رواتب وأجور',dr:amount,cr:0},{acc:'الخزينة الرئيسية',dr:0,cr:amount}],date);
+  }
+  W('wages',wages);
+
+  const farmerPayments=[], factoryCollections=[];
+  for(let i=1;i<=22;i++){
+    const pur=pick(purchases,i), date=d(i%25), amount=Math.min(pur.remaining||1500,1500+(i%7)*600);
+    farmerPayments.push({id:i,farmerId:pur.farmerId,farmerName:pur.farmerName,amount,method:i%2?'كاش':'تحويل بنكي',date,note:'سداد ديمو للمزارع'});
+    tj('صرف','الخزينة الرئيسية',amount,farmerPayments[farmerPayments.length-1].method,'سداد للمزارع '+pur.farmerName,date);
+    const sal=pick(sales,i), camount=Math.round(sal.total*(.25+(i%4)*.1));
+    factoryCollections.push({id:i,factoryId:sal.factoryId,factoryName:sal.factoryName,amount:camount,method:i%2?'كاش':'تحويل بنكي',date,note:'تحصيل ديمو من المصنع'});
+    tj('قبض','الخزينة الرئيسية',camount,factoryCollections[factoryCollections.length-1].method,'تحصيل من '+sal.factoryName,date);
+  }
+  W('farmerPayments',farmerPayments);W('factoryCollections',factoryCollections);
+
+  const agroItems=R('agroItems',[]), irrigItems=R('irrigItems',[]); const agroPur=[], agroSal=[], irSal=[];
+  for(let i=1;i<=22;i++){
+    const item=pick(agroItems,i), date=d(i%33), qty=20+(i%10)*5, price=item.cost+(i%5)*3;
+    agroPur.push({id:i,itemId:item.id,itemName:item.name,supplierId:pick(suppliers,i)?.id||1,supplierName:pick(suppliers,i)?.name||'',qty,price,total:qty*price,method:i%2?'كاش':'آجل',date});
+    if(i<=20){const sq=5+(i%8)*3, sp=item.price+(i%4)*4; agroSal.push({id:i,itemId:item.id,itemName:item.name,clientId:pick(clients,i)?.id||1,clientName:pick(clients,i)?.name||'',qty:sq,price:sp,total:sq*sp,cost:sq*item.cost,method:i%3?'كاش':'آجل',date});}
+  }
+  for(let i=1;i<=18;i++){
+    const item=pick(irrigItems,i), date=d(i%28), qty=2+(i%7), price=item.price+(i%5)*20;
+    irSal.push({id:i,itemId:item.id,itemName:item.name,clientId:pick(clients,i)?.id||1,clientName:pick(clients,i)?.name||'',qty,price,total:qty*price,cost:qty*item.cost,method:i%2?'كاش':'آجل',date});
+  }
+  W('agroPurchases',agroPur);W('agroSales',agroSal);W('irrigSales',irSal);
+
+  const chks=[];
+  for(let i=1;i<=18;i++){
+    const date=d(i%20), due=d(-((i%20)+3));
+    chks.push({id:i,type:i%2?'مقبوض':'مدفوع',number:'CHK-'+(8000+i),bank:pick(['الأهلي','مصر','CIB','QNB'],i),name:i%2?pick(factories,i).name:pick(suppliers,i)?.name||'مورد',amount:5000+(i%8)*1500,date,due,note:'شيك ديمو',status:i%5===0?'محصّل':'معلق'});
+  }
+  W('cheques',chks);
+
+  const wf=[];
+  const wfTypes=['طلب شراء','استلام فراولة','إذن تجهيز','إذن توريد','فاتورة بيع','تحصيل'];
+  for(let i=1;i<=30;i++){wf.push({id:i,type:pick(wfTypes,i),date:d(i%30),party:pick([...farmers,...factories],i).name,ref:'DOC-'+(3000+i),qty:(500+i*12)+' كجم',amount:3500+i*850,costCenter:pick(['توريد فراولة','مزرعة النيل','مزرعة الدلتا','مبيدات وأسمدة','ري حديث'],i),status:pick(['Draft','Approved','Closed'],i),note:'مستند دورة ديمو'});}
+  W('workflowDocs',wf);
+
+  const einv=[];
+  for(let i=0;i<15;i++){const s=sales[i]; if(!s)continue; const vat=+(s.total*.14).toFixed(2); einv.push({id:'ETA-DEMO-'+(1000+i),date:s.date+'T12:00:00',saleId:s.id,factory:s.factoryName,net:s.total,vat,total:+(s.total+vat).toFixed(2),status:'Created Demo',uuid:'DEMO-'+(Math.random().toString(36).slice(2,10).toUpperCase())});}
+  W('einvoices',einv);
+
+  // balances after demo activity
+  W('farmers',farmers.map(f=>{const cr=purchases.filter(p=>p.farmerId===f.id).reduce((a,p)=>a+p.remaining,0);const dr=farmerPayments.filter(p=>p.farmerId===f.id).reduce((a,p)=>a+p.amount,0);return {...f,balance:+Math.max(0,cr-dr).toFixed(2)};}));
+  W('factories',factories.map(f=>{const dr=sales.filter(s=>s.factoryId===f.id&&s.method==='آجل').reduce((a,s)=>a+s.total,0);const cr=factoryCollections.filter(c=>c.factoryId===f.id).reduce((a,c)=>a+c.amount,0);return {...f,balance:+Math.max(0,dr-cr).toFixed(2)};}));
+  W('treasury',treasury);W('journal',journal);W('auditLog',audit);
+  W('users',[{id:1,name:'Admin',role:'Admin',status:'Active'},{id:2,name:'Mostafa Finance',role:'Finance',status:'Active'},{id:3,name:'Store User',role:'Store Keeper',status:'Active'},{id:4,name:'Farm Manager',role:'Farm Manager',status:'Active'},{id:5,name:'Viewer Demo',role:'Viewer',status:'Active'}]);
+  W('taxSettings',{taxReg:'123-456-789',vatRate:14,etaEnv:'Pre-Production'});
+  W('ids',{farmer:50,factory:50,worker:50,farm:20,vehicle:20,supplier:20,client:20,agroItem:50,irrigItem:50,purchase:1061,sale:2056,processing:51,trip:36,maint:19,farmExp:46,farmProd:26,wage:36,farmerPay:23,factColl:23,agropur:23,agrosale:21,irrsale:19,cheque:19,journal:journal.length+1,workflow:31,farmOp:46});
+  W('demoSeedVersion',300);
+}
+
 // ══════════ DATA MANAGEMENT ══════════
 function exportData(){
-  const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','coa','treasury','settings','ids','seeded'];
+  const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','coa','treasury','settings','workflowDocs','farmOperations','auditLog','users','taxSettings','einvoices','ids','seeded','demoSeedVersion'];
   const data={};keys.forEach(k=>{const v=R(k,null);if(v!=null)data[k]=v;});
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='zad_backup_'+today()+'.json';a.click();
 }
 function importData(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{try{const data=JSON.parse(ev.target.result);Object.entries(data).forEach(([k,v])=>W(k,v));alert('تم الاستيراد ✓');location.reload();}catch(err){alert('خطأ: '+err.message);}};reader.readAsText(file);}
-function resetData(){const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','treasury','ids','seeded'];keys.forEach(k=>localStorage.removeItem(K+k));location.reload();}
+function resetData(){const keys=['farmers','factories','workers','farms','vehicles','suppliers','clients','agroItems','irrigItems','purchases','processing','sales','farmExpenses','farmProduction','trips','maintenances','wages','farmerPayments','factoryCollections','agroPurchases','agroSales','irrigSales','cheques','journal','treasury','workflowDocs','farmOperations','auditLog','users','taxSettings','einvoices','ids','seeded','demoSeedVersion'];keys.forEach(k=>localStorage.removeItem(K+k));location.reload();}
 
 // ══════════ PRINT ══════════
 function pw(html){const w=window.open('','_blank','width=900,height=700');w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:20px;direction:rtl;}table{width:100%;border-collapse:collapse;}th,td{border:1px solid #ccc;padding:7px;text-align:right;}th{background:#1B5E20;color:#fff;}h1,h2,h3{text-align:center;color:#1B5E20;}hr{margin:15px 0;}</style></head><body>'+html+'</body></html>');w.document.close();w.focus();w.print();}
@@ -1868,6 +2228,8 @@ setInterval(()=>{const el=document.getElementById('hClock');if(el)el.textContent
 // ══════════ INIT ══════════
 document.addEventListener('DOMContentLoaded',()=>{
   seed();
+  seedDemo300();
+  ['wfDate','fopDate','costFrom','costTo'].forEach(id=>{const e=document.getElementById(id);if(e&&!e.value)e.value=id==='costFrom'?today().slice(0,7)+'-01':today();});
   renderDashboard();
   document.getElementById('hSeason').textContent=R('settings',{season:'2024-2025'}).season;
   document.getElementById('rFrom').value=today().slice(0,7)+'-01';
